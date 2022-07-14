@@ -1,0 +1,8 @@
+
+{
+    "data": [
+        {"id": "1000","nombre": "DNI","id_estado": true,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1001","nombre": "Carnet Extranjeria","id_estado": false,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"}
+
+    ]
+}

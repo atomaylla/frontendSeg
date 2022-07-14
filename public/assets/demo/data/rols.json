@@ -1,0 +1,18 @@
+
+{
+    "data": [
+        {"id": "1000","id_aplicacion": "SAEP","titulo": "ABOGADO","descripcion": "Product Description","id_estado": true,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1001","id_aplicacion": "SAEP","titulo": "ABOGADO_CDJE","descripcion": "Product Description","id_estado": "true","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1002","id_aplicacion": "SAEP","titulo": "ADM_CDJE","descripcion": "Product Description","id_estado": "false","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1003","id_aplicacion": "SAEP","titulo": "ADM_OGA","descripcion": "Product Description","id_estado": "false","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1004","id_aplicacion": "SAEP","titulo": "ADM_PROC","descripcion": "Product Description","id_estado": "false","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1005","id_aplicacion": "SAEP","titulo": "ADM_SEG","descripcion": "Product Description","id_estado": "false","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1006","id_aplicacion": "SAEP","titulo": "PROCURADOR","descripcion": "Product Description","id_estado": "false","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1007","id_aplicacion": "SAEP","titulo": "PROCURADOR ADJUNTO","descripcion": "Product Description","id_estado": "true","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1004","id_aplicacion": "SAEP","titulo": "PROCURADOR TITULAR","descripcion": "Product Description","id_estado": "true","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1005","id_aplicacion": "SAEP","titulo": "PROCURADOR ADJUNTA","descripcion": "Product Description","id_estado": "true","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1006","id_aplicacion": "SAEP","titulo": "PROCURADOR TITULAR","descripcion": "Product Description","id_estado": "true","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1007","id_aplicacion": "SAEP","titulo": "SUPER CDJE","descripcion": "Product Description","id_estado": true,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"}
+    ]
+}
+

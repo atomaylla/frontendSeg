@@ -1,0 +1,7 @@
+
+{
+    "data": [
+        {"id": "1000","id_aplicacion": "SAEP","id_tipo": "1","descripcion": "Externo","id_estado": true,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1001","id_aplicacion": "SAEP","id_tipo": "2","descripcion": "Interno","id_estado": "true","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"}
+    ]
+}

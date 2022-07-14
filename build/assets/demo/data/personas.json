@@ -1,0 +1,6 @@
+{
+    "data": [
+        {"id_persona": "1000","id_documento": "DNI","numero":"34324435","nombres": "Julio Cesar","apellido_paterno": "Perez","apellido_materno": "Ramirez","fecha_nac": "15-05-1990","sexo": "Masculino","id_estado": "1","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"}
+
+    ]
+}

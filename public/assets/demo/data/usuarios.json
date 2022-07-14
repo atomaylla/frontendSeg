@@ -1,0 +1,10 @@
+
+{
+    "data": [
+        {"id": "1000","aplicacion": "SAEP","rol": "ABOGADO","name": "Juan Perez Zegarra Ramirez","usuario": "jpzegarra123","password": "jpzegarra123","tipoUser": "Interno","id_estado": true,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1001","aplicacion": "SAEP","rol": "ABOGADO_CDJE","name": "Luis Alberto Zara Diaz","usuario": "lzDiaz12","password": "jpzegarra123","tipoUser": "Externo","id_estado": false,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1002","aplicacion": "SAEP","rol": "ADM_CDJE","name": "Walter Oliva Perez","usuario": "woPerez12345","password": "jpzegarra123","tipoUser": "Externo","id_estado": true,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": "1003","aplicacion": "SAEP","rol": "ADM_OGA","name": "Yllezca Consuelo Pezo","usuario": "yCPezo123","password": "jpzegarra123","tipoUser": "Externo","id_estado": true,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"}
+    ]
+}
+

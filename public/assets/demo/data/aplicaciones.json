@@ -1,0 +1,6 @@
+{
+    "data": [
+        {"id_aplicacion": "1000","nombre": "SAEP","descripcion":"Sistema de Administracion de Expedientes Procesal","version": "1.0","uri": "localhost:80/saep","estado_id": true,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"}
+
+    ]
+}

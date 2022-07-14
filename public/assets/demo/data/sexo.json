@@ -1,0 +1,7 @@
+{
+    "data": [
+        {"id": 1,"nombre": "Hombre","id_estado": true,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id": 2,"nombre": "Mujer","id_estado": false,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"}
+
+    ]
+}

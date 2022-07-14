@@ -1,0 +1,7 @@
+{
+    "data": [
+        {"id_menu": "1000","id_aplicacion": "SAEP","titulo":"Inicio","icono": "","url": "test","descripcion": "menu inicio","orden": "1","padre_id": "0","id_estado": true,"fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"},
+        {"id_menu": "1001","id_aplicacion": "SAEP","titulo":"Consultas","icono": "","url": "","descripcion": "menu consultas","orden": "2","padre_id": "0","id_estado": "false","fec_cre": "10-06-2022","fec_mod": "16-06-2022","usu_cre": "ADM","usu_mod": "ADM2"}
+
+    ]
+}
