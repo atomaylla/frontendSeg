@@ -5,6 +5,8 @@ import { Chart } from 'primereact/chart';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ProductService } from '../service/ProductService';
+import {UsuarioService} from "../service/UsuarioService";
+import {PersonaService} from "../service/PersonaService";
 
 const lineData = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -110,10 +112,16 @@ const Dashboard = (props) => {
             applyDarkTheme();
         }
     }, [props.colorMode]);
+    /*
+        const formatCurrency = (value) => {
+            return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        };*/
+    const [usuarios, setUsuarios] = useState(null);
+    const usuarioService = new UsuarioService();
+    useEffect(() => {
 
-    const formatCurrency = (value) => {
-        return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    };
+        usuarioService.getUsuarios().then(data => setUsuarios(data));
+    }, []);
 
     return (
         <div className="grid">
@@ -121,70 +129,70 @@ const Dashboard = (props) => {
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
-                            <span className="block text-500 font-medium mb-3">Orders</span>
+                            <span className="block text-500 font-medium mb-3">Usuarios</span>
                             <div className="text-900 font-medium text-xl">152</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{width: '2.5rem', height: '2.5rem'}}>
-                            <i className="pi pi-shopping-cart text-blue-500 text-xl"/>
+                            <i className="pi pi-user text-blue-500 text-xl"/>
                         </div>
                     </div>
-                    <span className="text-green-500 font-medium">24 new </span>
-                    <span className="text-500">since last visit</span>
+                    <span className="text-green-500 font-medium">24 nuevos</span>
+                    <span className="text-500">Desde la ultima visita</span>
                 </div>
             </div>
             <div className="col-12 lg:col-6 xl:col-3">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
-                            <span className="block text-500 font-medium mb-3">Revenue</span>
-                            <div className="text-900 font-medium text-xl">$2.100</div>
+                            <span className="block text-500 font-medium mb-3">Entidades</span>
+                            <div className="text-900 font-medium text-xl">50</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{width: '2.5rem', height: '2.5rem'}}>
                             <i className="pi pi-map-marker text-orange-500 text-xl"/>
                         </div>
                     </div>
-                    <span className="text-green-500 font-medium">%52+ </span>
-                    <span className="text-500">since last week</span>
+                    <span className="text-green-500 font-medium">%20+ </span>
+                    <span className="text-500">Desde la ultima semana</span>
                 </div>
             </div>
             <div className="col-12 lg:col-6 xl:col-3">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
-                            <span className="block text-500 font-medium mb-3">Customers</span>
-                            <div className="text-900 font-medium text-xl">28441</div>
+                            <span className="block text-500 font-medium mb-3">Personas</span>
+                            <div className="text-900 font-medium text-xl">284</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{width: '2.5rem', height: '2.5rem'}}>
                             <i className="pi pi-inbox text-cyan-500 text-xl"/>
                         </div>
                     </div>
-                    <span className="text-green-500 font-medium">520  </span>
-                    <span className="text-500">newly registered</span>
+                    <span className="text-green-500 font-medium">20  </span>
+                    <span className="text-500">nuevos registros</span>
                 </div>
             </div>
             <div className="col-12 lg:col-6 xl:col-3">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
-                            <span className="block text-500 font-medium mb-3">Comments</span>
-                            <div className="text-900 font-medium text-xl">152 Unread</div>
+                            <span className="block text-500 font-medium mb-3">Aplicaciones</span>
+                            <div className="text-900 font-medium text-xl">2</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{width: '2.5rem', height: '2.5rem'}}>
                             <i className="pi pi-comment text-purple-500 text-xl"/>
                         </div>
                     </div>
-                    <span className="text-green-500 font-medium">85 </span>
-                    <span className="text-500">responded</span>
+                    <span className="text-green-500 font-medium">1 </span>
+                    <span className="text-500">nuevo registro</span>
                 </div>
             </div>
 
             <div className="col-12 xl:col-6">
                 <div className="card">
-                    <h5>Recent Sales</h5>
-                    <DataTable value={products} rows={5} paginator responsiveLayout="scroll">
-                        <Column header="Image" body={(data) => <img className="shadow-2" src={`assets/demo/images/product/${data.image}`} alt={data.image} width="50"/>}/>
-                        <Column field="name" header="Name" sortable style={{width: '35%'}}/>
-                        <Column field="price" header="Price" sortable style={{width: '35%'}} body={(data) => formatCurrency(data.price)}/>
+                    <h5>Usuarios</h5>
+                    <DataTable value={usuarios} rows={5} paginator responsiveLayout="scroll">
+
+                        <Column field="id" header="Name" sortable style={{width: '35%'}} body={(data) => data.id_usuario}/>
+                        <Column field="usuario" header="Usuario" sortable style={{width: '35%'}} body={(data) => data.usuario}/>
                         <Column header="View" style={{width:'15%'}} body={() => (
                             <>
                                 <Button icon="pi pi-search" type="button" className="p-button-text"/>
@@ -197,7 +205,7 @@ const Dashboard = (props) => {
 
             <div className="col-12 xl:col-6">
                 <div className="card">
-                    <h5>Sales Overview</h5>
+                    <h5>Ingreso Usuarios</h5>
                     <Chart type="line" data={lineData} options={lineOptions} />
                 </div>
 
