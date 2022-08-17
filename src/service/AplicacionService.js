@@ -5,7 +5,12 @@ import {axiosPrivate} from "../api/axios";
 /*import useAxiosPrivate from "../hooks/useAxiosPrivate";*/
 export class AplicacionService {
 
+    getAplicacionUsuarios(id) {
+        const token = JSON.parse(sessionStorage.getItem('token'));
+        const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
 
+        return axiosPrivate.get('usuarioAplicacion/obtenerUsuarioAplicacionDetalle/aplicacion/'+id,configToken).then(res => res.data);
+    }
 
     getAplicacion() {
         return axiosPrivate.get('aplicacion/list').then(res => res.data);

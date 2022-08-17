@@ -13,6 +13,22 @@ export class MenuService {
 
         return axiosPrivate.get('aplicacion/'+ id +'/menu/0',configToken).then(res => res.data);
     }
+    getMenusRol(id,idRol) {
+        const token = JSON.parse(sessionStorage.getItem('token'));
+        const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
+
+      //  return axiosPrivate.get('menu/-1/rol/'+ id +'/list',configToken).then(res => res.data);
+       return axiosPrivate.get('menuRol/aplicacion/'+id+'/rol/'+idRol+'/detalle',configToken).then(res => res.data);
+      //  return axiosPrivate.get('obtenerMenuRolDetalle',JSON.stringify(data1),configToken ).then(res => res.data);
+    }
+    postMenuRol(data){
+        const token = JSON.parse(sessionStorage.getItem('token'));
+        const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
+
+        return  axiosPrivate.post('menuRol/create', JSON.stringify(data),configToken).then(res => res.data).catch(error => {
+        });
+
+    }
     postMenu(id,data){
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};

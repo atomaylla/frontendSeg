@@ -2,23 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import {Route, useHistory, useLocation} from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
-
 import { AppTopbar } from './AppTopbar';
-import { AppFooter } from './AppFooter';
 import { AppMenu } from './AppMenu';
 import { AppConfig } from './AppConfig';
-
-import Dashboard from './components/Dashboard';
-
-import Crud from './pages/Crud';
-import Usuarios from './pages/Usuarios';
-import Rol from './pages/Rol';
-
-import PrimeReact from 'primereact/api';
 import { Tooltip } from 'primereact/tooltip';
-
-
-
 import 'primereact/resources/primereact.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
@@ -28,15 +15,26 @@ import './assets/demo/Demos.scss';
 import './assets/layout/layout.scss';
 import './App.scss';
 import Login from "./components/Login";
-import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-
-import swal from 'sweetalert';
 import Menu from "./pages/Menu";
 import Aplicacion from "./pages/Aplicacion";
 import Persona from "./pages/Persona";
-import useUser from "./components/Login";
-
+import Entidad from "./pages/Entidad";
+import Dashboard from './components/Dashboard';
+import Crud from './pages/Crud';
+import Usuarios from './pages/Usuarios';
+import Rol from './pages/Rol';
+import PrimeReact from 'primereact/api';
+import UnidadEjecutora from "./pages/UnidadEjecutora";
+import GobiernoNivel from "./pages/GobiernoNivel";
+import Gobierno from "./pages/Gobierno";
+import Contrato from './pages/Contrato';
+import Tipo from './pages/Tipo';
+import Estado from './pages/Estado';
+import Ubigeo from "./pages/Ubigeo";
+import DocumentoTipo from "./pages/DocumentoTipo";
+import Pais from "./pages/Pais";
+import Institucion from "./pages/Institucion";
+import PersonaCaracteristica from "./pages/PersonaCaracteristica";
 
 const App = () => {
     let history = useHistory()
@@ -50,46 +48,13 @@ const App = () => {
     const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);
     const copyTooltipRef = useRef();
     const location = useLocation();
-  //  const useUse = useUser();
+
 
     const [error, setError] = useState("");
 
     const [usernameOrEmail, setUsernameOrEmail] = useState();
     const [password, setPassword] = useState();
 
-
-   // const Login= details=> {
-        //console.log(details);
-       /* const response = fetch('http://10.10.2.121:8090/api/auth/iniciarSesion', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(details)
-        }).then(data => data.json())
-        const objeto = () => {
-            response.then((a) => {
-                if (a.tokenDeAcceso) {
-                    console.log("ingreso");
-                    setUser({
-                        id: a.id,
-                        displayName: a.displayName,
-                        role:a.role,
-                    })
-                } else {
-                    setError("Usuario y Password incorrectos")
-                    console.log("no ingreso");
-                }
-            });
-        }
-        objeto();
-
-        setUser({
-            id: "1",
-            displayName: "alex",
-            role:"Administrador",
-        })*/
-  // }
 
     PrimeReact.ripple = true;
 
@@ -203,12 +168,18 @@ const App = () => {
                 { label: 'Menu', icon: 'pi pi-fw pi-list', to: '/menu' },
                 { label: 'Persona', icon: 'pi pi-fw pi-user', to: '/persona' },
                 { label: 'Usuarios', icon: 'pi pi-fw pi-users', to: '/usuarios' },
-
-
-
-                /*    { label: 'Crud', icon: 'pi pi-fw pi-user-edit', to: '/crud' }
-                { label: 'Timeline', icon: 'pi pi-fw pi-calendar', to: '/timeline' },
-                  { label: 'Empty', icon: 'pi pi-fw pi-circle-off', to: '/empty' }*/
+                { label: 'Gobierno', icon: 'pi pi-fw pi-clone', to: '/gobierno' },
+                { label: 'GobiernoNivel', icon: 'pi pi-fw pi-globe', to: '/gobiernoNivel' },
+                { label: 'Entidad', icon: 'pi pi-fw pi-table', to: '/entidad' },
+                { label: 'UnidadEjecutora', icon: 'pi pi-fw pi-share-alt', to: '/unidadEjecutora' },
+                { label: 'Contrato', icon: 'pi pi-fw pi-list', to: '/contrato' },
+                { label: 'Tipo', icon: 'pi pi-fw  pi-file', to: '/tipo' },
+                { label: 'Estado', icon: 'pi pi-fw pi-bookmark', to: '/estado' },
+                { label: 'Ubigeo', icon: 'pi pi-fw pi-id-card', to: '/ubigeo' },
+                { label: 'DocumentoTipo', icon: 'pi pi-fw pi-check-square', to: '/documentoTipo' },
+                { label: 'Pais', icon: 'pi pi-fw pi-prime', to: '/pais' },
+                { label: 'Institucion', icon: 'pi pi-fw pi-chart-bar', to: '/institucion' },
+                { label: 'Persona Caracteristica', icon: 'pi pi-fw pi-circle-off', to: '/personaCaracteristica' },
             ]
         },
     ];
@@ -275,7 +246,18 @@ const App = () => {
 
                 <Route path="/menu" component={Menu} />
                 <Route path="/persona" component={Persona} />
-
+                <Route path="/entidad" component={Entidad} />
+                <Route path="/unidadEjecutora" component={UnidadEjecutora} />
+                <Route path="/gobiernonivel" component={GobiernoNivel} />
+                <Route path="/gobierno" component={Gobierno} />
+                <Route path="/contrato" component={Contrato} />
+                <Route path="/tipo" component={Tipo} />
+                <Route path="/estado" component={Estado} />
+                <Route path="/ubigeo" component={Ubigeo} />
+                <Route path="/documentoTipo" component={DocumentoTipo} />
+                <Route path="/pais" component={Pais} />
+                <Route path="/institucion" component={Institucion} />
+                <Route path="/personaCaracteristica" component={PersonaCaracteristica} />
             </div>
         </div>
 

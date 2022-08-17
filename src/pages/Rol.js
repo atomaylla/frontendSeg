@@ -8,6 +8,7 @@ import { FileUpload } from 'primereact/fileupload';
 import { Rating } from 'primereact/rating';
 import { Toolbar } from 'primereact/toolbar';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { Checkbox } from 'primereact/checkbox';
 import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
@@ -17,8 +18,54 @@ import {InputSwitch} from "primereact/inputswitch";
 import {Dropdown} from "primereact/dropdown";
 import {RolService} from "../service/RolService";
 import {AplicacionService} from "../service/AplicacionService";
+import {MenuService} from "../service/MenuService";
+
+
+
+
+
+
+
+
 
 const Rol = () => {
+   let emptyStateMenuRol = {
+       MasterChecked: false,
+        ListMenuRol: menus,
+        SelectedList: [],
+    };
+    let emptyProduct = {
+        id: null,
+        name: '',
+        image: null,
+        description: '',
+        category: null,
+        price: 0,
+        quantity: 0,
+        rating: 0,
+        inventoryStatus: 'INSTOCK'
+    };
+    let emptyMenuRol= {
+        id_menu: 0,
+        id_rol: 0
+    }
+    const [stateMenuRol,setStateMenuRol] = useState(emptyStateMenuRol);
+    const [menuRol, setMenuRol] = useState(emptyMenuRol);
+    const [menuRols, setMenuRols] = useState(null);
+    const [products, setProducts] = useState(null);
+
+
+    const [product, setProduct] = useState(emptyProduct);
+
+
+
+
+
+    useEffect(() => {
+        const productService = new ProductService();
+        productService.getProducts().then(data => setProducts(data));
+    }, []);
+
 
 
 
@@ -31,13 +78,16 @@ const Rol = () => {
     //const [products, setProducts] = useState(null);
     const [count,setCount] = useState(0);
     const [rols, setRols] = useState(null);
+    const [menus, setMenus] = useState(null);
     const [productDialog, setProductDialog] = useState(false);
     const [aplicacionDialog, setAplicacionDialog] = useState(true);
     const [menuDialog, setMenuDialog] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
     const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
+    const [selectedObjetos, setSelectedObjetos] = useState(null);
     const [id_aplicacion, setId_aplicacion] = useState(null);
     const [rol, setRol] = useState(emptyRol);
+    const [id_rol, setId_rol] = useState(null);
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -56,6 +106,7 @@ const Rol = () => {
     ];
     const rolService = new RolService();
     const aplicacionService = new AplicacionService();
+    const menuService = new MenuService();
     useEffect(() => {
         aplicacionService.getAplicacion().then(data => setAplicacion(data));
     }, []);
@@ -114,6 +165,32 @@ const Rol = () => {
 
 
     }
+    const saveMenuRol = () => {
+       // let _menuRols = { ...menuRols };
+        const _menuRols = [];
+
+        let _menuRol = { ...menuRol };
+
+        for (var i = 0; i < selectedProducts.length; i++){
+
+            var obj = selectedProducts[i];
+            for (var key in obj){
+                var value = obj[key];
+
+                if(key === "id_menu"){
+                    _menuRols.push({ "id_menu" : value, "id_rol": id_rol});
+               }
+
+            }
+
+
+        }
+
+        console.log(_menuRols);
+        menuService.postMenuRol(_menuRols).then(data => setMenuRols(data));
+        setMenuDialog(false);
+      //  setProductDialog(false);
+    }
     const saveProduct = () => {
         setSubmitted(true);
         const rolService = new RolService();
@@ -166,12 +243,20 @@ const Rol = () => {
     const editMenu = (rol) => {
         //setProduct({ ...product });
         setRol({ ...rol });
+        setId_rol(rol.id_rol);
+       const objMenuRol = [{"rol": rol.id_rol, "aplicacion":id_aplicacion}];
+        menuService.getMenusRol(id_aplicacion,rol.id_rol).then(data => {
+            setMenus(data);
+            setStateMenuRol({
+                ListMenuRol: data,
+            });
 
+        });
         setMenuDialog(true);
     }
     const confirmDeleteProduct = (rol) => {
        // setProduct(product);
-        setRol(rol);
+        setRol(rol)
         setDeleteProductDialog(true);
     }
 
@@ -224,6 +309,9 @@ const Rol = () => {
    const onAplicacionChange = (e) =>{
        setId_aplicacion(e.value);
    }
+    const onCheckBox = (e) =>{
+        console.log(e);
+    }
     const onEstadoChange = (e) =>{
 
         setState(e.value)
@@ -242,6 +330,78 @@ const Rol = () => {
         console.log(_rol);
     }
 
+    const selectable = (item) =>{
+        return item.id_estado == 1?true:false;
+    }
+    /*const onMasterCheck = (e)=>{
+        menus.map((user) => (user.selected = e.target.checked));
+        console.log(e);
+    }*/
+    const allSelectableItems =()=> {
+        return menus.filter(x => selectable(x));
+    }
+    const isSelected =(item) =>{
+       // const totalItems = stateMenuRol.SelectedList;
+      //  console.log(totalItems);
+        //if(totalItems){
+            return item.id_estado ==1?true:false;
+
+      /*  }else{
+            let tempList = stateMenuRol.ListMenuRol;
+            tempList.map((user) => {
+                if (user.id_menu === item.id_menu) {
+                    return  user.id_estado ==1?true:false;
+                    // console.log(item);
+                }
+
+                // return user;
+            });
+        }*/
+        //console.log("----select-----------");
+       // console.log(item);
+
+        //return (stateMenuRol.selection.includes(item));
+    }
+   const toggleAll= (allSelected) => {
+        const selection = allSelected ? allSelectableItems() : [];
+       // setStateMenuRol({ allSelected, selection });
+    }
+    const onMasterCheck =(e) =>{
+        console.log(stateMenuRol);
+        let tempList = stateMenuRol.ListMenuRol;
+
+        // Check/ UnCheck All Items
+        tempList.map((user) => (user.id_estado = e.target.checked==true?1:0));
+//console.log(e.target.checked);
+        //Update State
+        setStateMenuRol({
+            MasterChecked: e.target.checked,
+            ListMenuRol: tempList,
+            SelectedList: stateMenuRol.ListMenuRol.filter((e) => e.selected),
+        });
+    }
+   const onItemCheck=(e, item)=> {
+        console.log(e.target.checked);
+       let tempList = stateMenuRol.ListMenuRol;
+       tempList.map((user) => {
+           if (user.id_menu === item.id_menu) {
+               user.id_estado = e.target.checked==true?1:0;
+             //  console.log(item);
+           }
+
+           //return user;
+       });
+       const totalItems = stateMenuRol.ListMenuRol.length;
+       const totalCheckedItems = tempList.filter((e) => e.selected).length;
+
+       // Update State
+       setStateMenuRol({
+           MasterChecked: totalItems === totalCheckedItems,
+           ListMenuRol: tempList,
+           SelectedList: stateMenuRol.ListMenuRol.filter((e) => e.selected),
+       });
+
+   }
     const onInputNumberChange = (e, name) => {
         const val = e.value || 0;
         let _rol = { ...rol };
@@ -277,7 +437,14 @@ const Rol = () => {
             </>
         );
     }
-
+    const idMenuBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Code</span>
+                {rowData.id_menu}
+            </>
+        );
+    }
     const idBodyTemplate = (rowData) => {
         return (
             <>
@@ -287,6 +454,14 @@ const Rol = () => {
         );
     }
     const nameBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.titulo}
+            </>
+        );
+    }
+    const nameMenuBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Name</span>
@@ -362,6 +537,12 @@ const Rol = () => {
             <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
         </>
     );
+    const menuRolDialogFooter = (
+        <>
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveMenuRol} />
+        </>
+    );
     const aplicacionDialogFooter = (
         <>
 
@@ -398,23 +579,44 @@ const Rol = () => {
                         <Column field="Id" header="Id" sortable body={idBodyTemplate} headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
                         <Column field="name" header="Nombre" sortable body={nameBodyTemplate} headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
 
-                        <Column field="Aplicación" header="Descripción" sortable body={aplicacionBodyTemplate} headerStyle={{ width: '10%', minWidth: '10rem' }}></Column>
-
                         <Column field="inventoryStatus" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ width: '10%', minWidth: '10rem' }}></Column>
 
                         <Column header="Menu" body={actionMenuTemplate}></Column>
                         <Column header="Acciones" body={actionBodyTemplate}></Column>
                     </DataTable>
-                    <Dialog visible={menuDialog} style={{ width: '650px' }} header="Menu" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+
+                    <Dialog visible={menuDialog} style={{ width: '650px' }} header="Menu" modal className="p-fluid" footer={menuRolDialogFooter} onHide={hideDialog}>
                         <div className="formgrid grid">
-                            <div className="field-radiobutton col-6">
-                                <label htmlFor="descripcion">Seleccionar</label><br/>
-                                <InputTextarea id="descripcion"  onChange={(e) => onInputChange(e, 'descripcion')} required rows={13} cols={120} />
-                            </div>
-                            <div className="field-radiobutton col-6">
-                                <label htmlFor="descripcion">Seleccionados</label><br/>
-                                <InputTextarea id="descripcion"  onChange={(e) => onInputChange(e, 'descripcion')} required rows={13} cols={120} />
-                            </div>
+
+
+                            <DataTable ref={dt} value={menus} selection={selectedProducts} onSelectionChange={(e) => setSelectedProducts(e.value)}
+                                       dataKey="id_menu" paginator rows={10} rowsPerPageOptions={[5, 10, 25]} className="datatable-responsive"
+                                       paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                                       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                                       globalFilter={globalFilter} emptyMessage="No products found." responsiveLayout="scroll">
+
+                                <Column
+                                    sortable={false}
+                                   header={
+                                        <Checkbox
+                                            checked={stateMenuRol.MasterChecked}
+                                            onChange={(e) => onMasterCheck(e)}
+                                        />
+                                    }
+                                    body={ (rowData, column) => (
+                                        <Checkbox name={rowData.id_estado} onChange={(e) => onItemCheck(e, rowData)} checked={isSelected(rowData)} />
+
+                                    ) }
+                                    style={{width: '2em'}}
+                                />
+                                <Column field="name" header="Name" sortable body={nameBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
+
+
+                                <Column field="category" header="Category" sortable body={categoryBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
+
+
+
+                            </DataTable>
 
                         </div>
 

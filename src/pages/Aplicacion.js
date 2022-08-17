@@ -10,10 +10,16 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import {InputSwitch} from "primereact/inputswitch";
 import {AplicacionService} from "../service/AplicacionService";
+import {Checkbox} from "primereact/checkbox";
+import {UsuarioService} from "../service/UsuarioService";
 
 
 const Aplicacion = () => {
-
+    let emptyStateMenuRol = {
+        MasterChecked: false,
+        ListMenuRol: usuarios,
+        SelectedList: [],
+    };
     let emptyAplicacion = {
         nombre: '',
         descripcion: '',
@@ -21,12 +27,15 @@ const Aplicacion = () => {
         uri: '',
         id_estado: true
     };
-
+    const [stateMenuRol,setStateMenuRol] = useState(emptyStateMenuRol);
     const [aplicaciones, setAplicaciones] = useState(null);
+    const [usuarios, setUsuarios] = useState(null);
     const [productDialog, setProductDialog] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
     const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
     const [aplicacion, setAplicacion] = useState(emptyAplicacion);
+    const [usuarioDialog, setUsuarioDialog] = useState(false);
+    const [id_aplicacion, setId_aplicacion] = useState(null);
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
@@ -36,6 +45,9 @@ const Aplicacion = () => {
     const useDeleteAplicacion = useState(null);
 
     const [count,setCount] = useState(0);
+
+    const aplicacionService = new AplicacionService();
+    const usuarioService = new UsuarioService();
     const openNew = () => {
         setAplicacion(emptyAplicacion);
         setSubmitted(false);
@@ -46,6 +58,10 @@ const Aplicacion = () => {
         setSubmitted(false);
         setProductDialog(false);
     }
+    const hideUsuarioDialog = () => {
+        setSubmitted(false);
+        setUsuarioDialog(false);
+    }
 
     const hideDeleteProductDialog = () => {
         setDeleteProductDialog(false);
@@ -54,7 +70,32 @@ const Aplicacion = () => {
     const hideDeleteProductsDialog = () => {
         setDeleteProductsDialog(false);
     }
+    const saveUsuario = () => {
+        // let _menuRols = { ...menuRols };
+    /*    const _usuarios = [];
 
+        let _usuario = { ...usuario };
+
+        for (var i = 0; i < selectedProducts.length; i++){
+
+            var obj = selectedProducts[i];
+            for (var key in obj){
+                var value = obj[key];
+
+                if(key === "id_menu"){
+                    _usuarios.push({ "id_menu" : value, "id_rol": id_rol});
+                }
+
+            }
+
+
+        }
+
+        console.log(_menuRols);*/
+      /*  menuService.postMenuRol(_menuRols).then(data => setMenuRols(data));*/
+        setUsuarioDialog(false);
+        //  setProductDialog(false);
+    }
     const saveProduct = async() => {
 
         setSubmitted(true);
@@ -105,7 +146,20 @@ const Aplicacion = () => {
         setAplicacion({ ...aplicacion });
         setProductDialog(true);
     }
+    const editUsuario = (aplicacion) => {
+        //setProduct({ ...product });
+        setAplicacion({ ...aplicacion });
+        setId_aplicacion(aplicacion.id_aplicacion);
+      //  const objMenuRol = [{"rol": rol.id_rol, "aplicacion":id_aplicacion}];
+        aplicacionService.getAplicacionUsuarios(aplicacion.id_aplicacion).then(data => {
+            setUsuarios(data);
+            setStateMenuRol({
+                ListMenuRol: data,
+            });
 
+        });
+        setUsuarioDialog(true);
+    }
     const confirmDeleteProduct = (aplicacion) => {
         setAplicacion(aplicacion);
         setDeleteProductDialog(true);
@@ -166,6 +220,41 @@ const Aplicacion = () => {
         setAplicacion(_aplicacion);
         console.log(_aplicacion);
     }
+    const onMasterCheck =(e) =>{
+        console.log(stateMenuRol);
+        let tempList = stateMenuRol.ListMenuRol;
+
+        // Check/ UnCheck All Items
+        tempList.map((user) => (user.id_estado = e.target.checked==true?1:0));
+
+        setStateMenuRol({
+            MasterChecked: e.target.checked,
+            ListMenuRol: tempList,
+            SelectedList: stateMenuRol.ListMenuRol.filter((e) => e.selected),
+        });
+    }
+    const onItemCheck=(e, item)=> {
+        console.log(e.target.checked);
+        let tempList = stateMenuRol.ListMenuRol;
+        tempList.map((user) => {
+            if (user.id_usuario === item.id_usuario) {
+                user.id_estado = e.target.checked==true?1:0;
+                //  console.log(item);
+            }
+
+            //return user;
+        });
+        const totalItems = stateMenuRol.ListMenuRol.length;
+        const totalCheckedItems = tempList.filter((e) => e.selected).length;
+
+        // Update State
+        setStateMenuRol({
+            MasterChecked: totalItems === totalCheckedItems,
+            ListMenuRol: tempList,
+            SelectedList: stateMenuRol.ListMenuRol.filter((e) => e.selected),
+        });
+
+    }
     const onInputChange = (e, name) => {
         const val = (e.target && e.target.value) || '';
         let _usuario = { ...aplicacion };
@@ -211,6 +300,14 @@ const Aplicacion = () => {
             </>
         );
     }
+    const usuarioBodyTemplate = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.usuario}
+            </>
+        );
+    }
     const nameBodyTemplate = (rowData) => {
         return (
             <>
@@ -236,7 +333,14 @@ const Aplicacion = () => {
             </>
         )
     }
+    const actionUsuarioTemplate = (rowData) => {
+        return (
+            <div className="actions">
+                <Button icon="pi pi-align-justify" className="p-button-rounded p-button-success mr-2" onClick={() => editUsuario(rowData)} />
 
+            </div>
+        );
+    }
     const actionBodyTemplate = (rowData) => {
         return (
             <div className="actions">
@@ -262,6 +366,12 @@ const Aplicacion = () => {
             <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
         </>
     );
+    const usuarioDialogFooter = (
+        <>
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveUsuario} />
+        </>
+    );
     const deleteProductDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteProductDialog} />
@@ -275,13 +385,15 @@ const Aplicacion = () => {
         </>
     );
     const [updateList, setUpdateList] = useState(false);
-    const aplicacionService = new AplicacionService();
+
     const getData = async() =>{
 
         const response = aplicacionService.getAplicacion();
         return response;
     }
-
+    const isSelected =(item) =>{
+        return item.id_estado ==1?true:false;
+    }
     useEffect(async() => {
         console.log("ingreso list");
        getData().then(data => setAplicaciones(data));
@@ -304,10 +416,11 @@ const Aplicacion = () => {
                         <Column field="Id" header="Id" sortable body={idBodyTemplate} headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
                         <Column field="Nombre" header="Nombre" sortable body={nameBodyTemplate} headerStyle={{ width: '25%', minWidth: '10rem' }}></Column>
 
-                        <Column field="Nombre" header="Versión" sortable body={versionBodyTemplate} headerStyle={{ width: '25%', minWidth: '10rem' }}></Column>
+                        <Column field="Nombre" header="Versión" sortable body={versionBodyTemplate} headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
 
-                        <Column field="inventoryStatus" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
-                        <Column body={actionBodyTemplate}></Column>
+                        <Column field="inventoryStatus" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
+                        <Column header="Usuario" body={actionUsuarioTemplate}></Column>
+                        <Column header="Acciones" body={actionBodyTemplate}></Column>
                     </DataTable>
 
                     <Dialog visible={productDialog} style={{ width: '450px' }} header="Aplicación" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
@@ -348,7 +461,37 @@ const Aplicacion = () => {
                             {aplicacion && <span> Deseas  eliminar la aplicación  <b>{aplicacion.nombre}</b>?</span>}
                         </div>
                     </Dialog>
+                    <Dialog visible={usuarioDialog} style={{ width: '650px' }} header="Usuarios" modal className="p-fluid" footer={usuarioDialogFooter} onHide={hideUsuarioDialog}>
+                        <div className="formgrid grid">
 
+
+                            <DataTable ref={dt} value={usuarios} selection={selectedProducts} onSelectionChange={(e) => setSelectedProducts(e.value)}
+                                       dataKey="id_menu" paginator rows={10} rowsPerPageOptions={[5, 10, 25]} className="datatable-responsive"
+                                       paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                                       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                                       globalFilter={globalFilter} emptyMessage="No products found." responsiveLayout="scroll">
+
+                                <Column
+                                    sortable={false}
+                                    header={
+                                        <Checkbox
+                                            checked={stateMenuRol.MasterChecked}
+                                            onChange={(e) => onMasterCheck(e)}
+                                        />
+                                    }
+                                    body={ (rowData, column) => (
+                                        <Checkbox name={rowData.id_estado} onChange={(e) => onItemCheck(e, rowData)} checked={isSelected(rowData)} />
+
+                                    ) }
+                                    style={{width: '10%'}}
+                                />
+                                <Column field="name" header="Nombres" sortable body={usuarioBodyTemplate} headerStyle={{ width: '50%', minWidth: '10rem' }}></Column>
+
+                            </DataTable>
+
+                        </div>
+
+                    </Dialog>
 
                 </div>
             </div>

@@ -112,10 +112,10 @@ const Dashboard = (props) => {
             applyDarkTheme();
         }
     }, [props.colorMode]);
-    /*
-        const formatCurrency = (value) => {
-            return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-        };*/
+/*
+    const formatCurrency = (value) => {
+        return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    };*/
     const [usuarios, setUsuarios] = useState(null);
     const usuarioService = new UsuarioService();
     useEffect(() => {
