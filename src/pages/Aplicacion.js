@@ -14,6 +14,9 @@ import {Checkbox} from "primereact/checkbox";
 import {UsuarioService} from "../service/UsuarioService";
 
 
+
+
+
 const Aplicacion = () => {
     let emptyStateMenuRol = {
         MasterChecked: false,
@@ -31,6 +34,7 @@ const Aplicacion = () => {
     const [aplicaciones, setAplicaciones] = useState(null);
     const [usuarios, setUsuarios] = useState(null);
     const [productDialog, setProductDialog] = useState(false);
+    const [usuarioAplicacions, setUsuarioAplicacions] = useState(null);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
     const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
     const [aplicacion, setAplicacion] = useState(emptyAplicacion);
@@ -70,7 +74,46 @@ const Aplicacion = () => {
     const hideDeleteProductsDialog = () => {
         setDeleteProductsDialog(false);
     }
+
+    const deleteUsuario = () => {
+        const _usuarios = [];
+        // console.log(stateMenuRol.ListMenuRol);
+        let tempList = stateMenuRol.ListMenuRol;
+        tempList.map((user) => {
+            //  console.log(user);
+            if (user.id_estado === "1") {
+                _usuarios.push({ "id_usuario" : user.id_usuario, "id_aplicacion": id_aplicacion});
+                //  console.log(user);
+            }
+
+            //return user;
+        });
+
+         console.log(_usuarios);
+        usuarioService.deleteUsuarioAplicacion(_usuarios).then(data => setUsuarioAplicacions(data));
+
+
+
+
+    }
+
     const saveUsuario = () => {
+        const _usuarios = [];
+        // console.log(stateMenuRol.ListMenuRol);
+        let tempList = stateMenuRol.ListMenuRol;
+        tempList.map((user) => {
+            //  console.log(user);
+            if (user.id_estado === "1") {
+                _usuarios.push({ "id_usuario" : user.id_usuario, "id_aplicacion": id_aplicacion});
+                //  console.log(user);
+            }
+
+            //return user;
+        });
+
+        // console.log(_menuRols);
+        usuarioService.postUsuarioAplicacion(_usuarios).then(data => setUsuarioAplicacions(data));
+        setUsuarioDialog(false);
         // let _menuRols = { ...menuRols };
     /*    const _usuarios = [];
 
@@ -238,7 +281,7 @@ const Aplicacion = () => {
         let tempList = stateMenuRol.ListMenuRol;
         tempList.map((user) => {
             if (user.id_usuario === item.id_usuario) {
-                user.id_estado = e.target.checked==true?1:0;
+                user.id_estado = e.target.checked==true?'1':'0';
                 //  console.log(item);
             }
 
@@ -355,7 +398,10 @@ const Aplicacion = () => {
             <h5 className="m-0">Aplicación</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
-                <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
+                <InputText type="search" onInput={(e) => {
+                    console.log(e.target.value);
+                    setGlobalFilter(e.target.value)
+                }} placeholder="Search..." />
             </span>
         </div>
     );
@@ -369,6 +415,7 @@ const Aplicacion = () => {
     const usuarioDialogFooter = (
         <>
             <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Eliminar" icon="pi pi-times" className="p-button-text" onClick={deleteUsuario} />
             <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveUsuario} />
         </>
     );
@@ -414,7 +461,7 @@ const Aplicacion = () => {
                                globalFilter={globalFilter} emptyMessage="No products found." header={header} responsiveLayout="scroll">
 
                         <Column field="Id" header="Id" sortable body={idBodyTemplate} headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
-                        <Column field="Nombre" header="Nombre" sortable body={nameBodyTemplate} headerStyle={{ width: '25%', minWidth: '10rem' }}></Column>
+                        <Column field="Nombre" header="Nombre" filterField="nombre" sortable body={nameBodyTemplate} headerStyle={{ width: '25%', minWidth: '10rem' }}></Column>
 
                         <Column field="Nombre" header="Versión" sortable body={versionBodyTemplate} headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
 

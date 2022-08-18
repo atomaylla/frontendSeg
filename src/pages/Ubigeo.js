@@ -248,9 +248,9 @@ const Ubigeo = () => {
                                globalFilter={globalFilter} emptyMessage="No products found." header={header} responsiveLayout="scroll">
 
                         <Column field="Id" header="Id" sortable body={idBodyTemplate} headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
-                        <Column field="Nombre" header="Departamento" sortable body={nameBodyTemplate} headerStyle={{ width: '55%', minWidth: '10rem' }}></Column>
-                        <Column field="Nombre" header="Provincia" sortable body={provinciaBodyTemplate} headerStyle={{ width: '55%', minWidth: '10rem' }}></Column>
-                        <Column field="Nombre" header="Distrito" sortable body={distritoBodyTemplate} headerStyle={{ width: '55%', minWidth: '10rem' }}></Column>
+                        <Column field="Nombre" header="Departamento" filterField="departamento"sortable body={nameBodyTemplate} headerStyle={{ width: '55%', minWidth: '10rem' }}></Column>
+                        <Column field="Nombre" header="Provincia" filterField="provincia" sortable body={provinciaBodyTemplate} headerStyle={{ width: '55%', minWidth: '10rem' }}></Column>
+                        <Column field="Nombre" header="Distrito" filterField="distrito"sortable body={distritoBodyTemplate} headerStyle={{ width: '55%', minWidth: '10rem' }}></Column>
                         <Column field="inventoryStatus" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
 
                     </DataTable>

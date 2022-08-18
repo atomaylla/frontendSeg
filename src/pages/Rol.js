@@ -166,9 +166,25 @@ const Rol = () => {
 
     }
     const saveMenuRol = () => {
-       // let _menuRols = { ...menuRols };
         const _menuRols = [];
+      // console.log(stateMenuRol.ListMenuRol);
+        let tempList = stateMenuRol.ListMenuRol;
+        tempList.map((user) => {
+          //  console.log(user);
+            if (user.id_estado === "1") {
+                _menuRols.push({ "id_menu" : user.id_menu, "id_rol": id_rol});
+               //  console.log(user);
+            }
 
+            //return user;
+        });
+
+       // console.log(_menuRols);
+        menuService.postMenuRol(_menuRols).then(data => setMenuRols(data));
+        setMenuDialog(false);
+       // let _menuRols = { ...menuRols };
+        //const _menuRols = [];
+/*
         let _menuRol = { ...menuRol };
 
         for (var i = 0; i < selectedProducts.length; i++){
@@ -188,7 +204,7 @@ const Rol = () => {
 
         console.log(_menuRols);
         menuService.postMenuRol(_menuRols).then(data => setMenuRols(data));
-        setMenuDialog(false);
+        setMenuDialog(false);*/
       //  setProductDialog(false);
     }
     const saveProduct = () => {
@@ -371,7 +387,7 @@ const Rol = () => {
         let tempList = stateMenuRol.ListMenuRol;
 
         // Check/ UnCheck All Items
-        tempList.map((user) => (user.id_estado = e.target.checked==true?1:0));
+        tempList.map((user) => (user.id_estado = e.target.checked==true?'1':'0'));
 //console.log(e.target.checked);
         //Update State
         setStateMenuRol({
@@ -381,11 +397,14 @@ const Rol = () => {
         });
     }
    const onItemCheck=(e, item)=> {
-        console.log(e.target.checked);
+    /* stateMenuRol.ListMenuRol.filter((e) => {
+         console.log(e);
+
+     });*/
        let tempList = stateMenuRol.ListMenuRol;
        tempList.map((user) => {
            if (user.id_menu === item.id_menu) {
-               user.id_estado = e.target.checked==true?1:0;
+               user.id_estado = e.target.checked==true?'1':'0';
              //  console.log(item);
            }
 
@@ -400,7 +419,7 @@ const Rol = () => {
            ListMenuRol: tempList,
            SelectedList: stateMenuRol.ListMenuRol.filter((e) => e.selected),
        });
-
+// console.log(stateMenuRol.ListMenuRol);
    }
     const onInputNumberChange = (e, name) => {
         const val = e.value || 0;
@@ -577,7 +596,7 @@ const Rol = () => {
                                globalFilter={globalFilter} emptyMessage="No hay registros" header={header} responsiveLayout="scroll">
 
                         <Column field="Id" header="Id" sortable body={idBodyTemplate} headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
-                        <Column field="name" header="Nombre" sortable body={nameBodyTemplate} headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
+                        <Column field="name" header="Nombre" filterField="titulo"sortable body={nameBodyTemplate} headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
 
                         <Column field="inventoryStatus" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ width: '10%', minWidth: '10rem' }}></Column>
 

@@ -17,7 +17,7 @@ export class PersonaCaracteristicaService {
     postPersonaCaracteristica(idper,idtipo,idcar,data){
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
-        return  axiosPrivate.post('personaCaracteristica/persona/2/tipo/4/caracteristica/4/create', JSON.stringify(data),configToken).then(res => res.data).catch(error => {
+        return  axiosPrivate.post('personaCaracteristica/persona/'+idper+'/tipo/'+idtipo+'/caracteristica/'+idcar+'/create', JSON.stringify(data),configToken).then(res => res.data).catch(error => {
         });
     }
     putPersonaCaracteristica(id,data){
@@ -26,10 +26,10 @@ export class PersonaCaracteristicaService {
         return  axiosPrivate.put('tipo/4/contrato/update/'+ id, JSON.stringify(data),configToken).then(res => res.data).catch(error => {
         });
     }
-    deletePersonaCaracteristica(id) {
+    deletePersonaCaracteristica(idper,idtipo,idcar) {
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
-        return  axiosPrivate.put('tipo/4/contrato/updateDelete/'+ id,'',configToken).then(res => res.data).catch(error => {
+        return  axiosPrivate.delete('personaCaracteristica/persona/'+idper+'/tipo/'+idtipo+'/caracteristica/'+idcar+'/delete/',configToken).then(res => res.data).catch(error => {
         });
     }
 }

@@ -171,7 +171,7 @@ const Persona = () => {
     }
 
     const editProduct = (persona) => {
-
+        setIdTipoDocumento(persona.id_documento)
         setIdSexo(persona.sexo);
         setPersona({ ...persona });
 
@@ -414,7 +414,7 @@ const Persona = () => {
                         <Column field="Id" header="Id" sortable body={idBodyTemplate} headerStyle={{ width: '5%', minWidth: '10rem' }}></Column>
 
                         <Column field="Nombre" header="Nro Documento" sortable body={nroDocumentoBodyTemplate} headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
-                        <Column field="Nombre" header="Nombre" sortable body={nameBodyTemplate} headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
+                        <Column field="Nombre" header="Nombre" filterField="nombres" sortable body={nameBodyTemplate} headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
                         <Column field="inventoryStatus" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ width: '10%', minWidth: '10rem' }}></Column>
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>

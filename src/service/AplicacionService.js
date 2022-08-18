@@ -33,4 +33,5 @@ export class AplicacionService {
         return  axiosPrivate.delete('aplicacion/delete/'+ id,configToken).then(res => res.data).catch(error => {
         });
     }
+
 }

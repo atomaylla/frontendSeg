@@ -545,7 +545,7 @@ const Menu = () => {
                                globalFilter={globalFilter} emptyMessage="No hay registros" header={header} responsiveLayout="scroll">
 
                         <Column field="Id" header="Id" sortable body={idBodyTemplate} headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
-                        <Column field="name" header="Nombre" sortable body={nameBodyTemplate} headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
+                        <Column field="name" header="Nombre" filterField="titulo" sortable body={nameBodyTemplate} headerStyle={{ width: '20%', minWidth: '10rem' }}></Column>
 
 
                         <Column field="inventoryStatus" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ width: '10%', minWidth: '10rem' }}></Column>
@@ -562,7 +562,7 @@ const Menu = () => {
                                    globalFilter={globalFilter} emptyMessage="No products found."  responsiveLayout="scroll">
 
                             <Column field="Id" header="Id" sortable body={idBodyTemplateSubMenu} headerStyle={{ width: '5%', minWidth: '10rem' }}></Column>
-                            <Column field="name" header="Nombre" sortable body={nameBodyTemplate} headerStyle={{ width: '10%', minWidth: '10rem' }}></Column>
+                            <Column field="name" header="Nombre" filterField="titulo"  sortable body={nameBodyTemplate} headerStyle={{ width: '10%', minWidth: '10rem' }}></Column>
                             <Column field="name" header="Orden" sortable body={ordenBodyTemplate} headerStyle={{ width: '10%', minWidth: '10rem' }}></Column>
                             <Column header="Acciones" body={actionSubMenuTemplate}></Column>
                         </DataTable>

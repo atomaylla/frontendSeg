@@ -341,7 +341,7 @@ const UnidadEjecutora = () => {
                                globalFilter={globalFilter} emptyMessage="No products found." header={header} responsiveLayout="scroll">
 
                         <Column field="Id" header="Id" sortable body={idBodyTemplate} headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
-                        <Column field="Nombre" header="Nombre" sortable body={nameBodyTemplate} headerStyle={{ width: '50%', minWidth: '10rem' }}></Column>
+                        <Column field="Nombre" header="Nombre" filterField="nombre" sortable body={nameBodyTemplate} headerStyle={{ width: '50%', minWidth: '10rem' }}></Column>
 
 
                         <Column field="inventoryStatus" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
@@ -366,7 +366,7 @@ const UnidadEjecutora = () => {
                         </div>
 
                     </Dialog>
-                    <Dialog visible={aplicacionDialog} style={{ width: '450px' }} header="Entidad" modal className="p-fluid" footer={aplicacionDialogFooter} onHide={hideDialogAplicacion}>
+                    <Dialog visible={aplicacionDialog} style={{ width: '450px' }} header="Unidad Ejecutora" modal className="p-fluid" footer={aplicacionDialogFooter} onHide={hideDialogAplicacion}>
                         <div className="field">
                             <label htmlFor="name">Gobierno</label>
                             <Dropdown

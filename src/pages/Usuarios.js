@@ -414,7 +414,7 @@ const Menu = () => {
 
                         <Column field="Id" header="Id" sortable body={idBodyTemplate} headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
 
-                        <Column field="Usuario" header="Usuario" sortable body={usuarioBodyTemplate} headerStyle={{ width: '30%', minWidth: '10rem' }}></Column>
+                        <Column field="Usuario" header="Usuario" filterField="usuario"sortable body={usuarioBodyTemplate} headerStyle={{ width: '30%', minWidth: '10rem' }}></Column>
 
                         <Column field="inventoryStatus" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ width: '30%', minWidth: '10rem' }}></Column>
                         <Column body={actionBodyTemplate}></Column>

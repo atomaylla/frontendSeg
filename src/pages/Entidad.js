@@ -392,7 +392,7 @@ const Entidad = () => {
 
                         <Column field="Id" header="Id" sortable body={idBodyTemplate} headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
 
-                        <Column field="Usuario" header="Nombre" sortable body={nombreBodyTemplate} headerStyle={{ width: '50%', minWidth: '10rem' }}></Column>
+                        <Column field="Usuario" header="Nombre" filterField="nombre"sortable body={nombreBodyTemplate} headerStyle={{ width: '50%', minWidth: '10rem' }}></Column>
 
                         <Column field="inventoryStatus" header="Estado" body={statusBodyTemplate} sortable headerStyle={{ width: '15%', minWidth: '10rem' }}></Column>
                         <Column body={actionBodyTemplate}></Column>

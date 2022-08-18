@@ -11,6 +11,13 @@ export class PersonaService {
 
         return axiosPrivate.get('documento/9/persona/list',configToken).then(res => res.data);
     }
+    getTipoCaracteristicas(id) {
+        const token = JSON.parse(sessionStorage.getItem('token'));
+        const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
+
+        return axiosPrivate.get('tipo/'+id+'/contrato/list',configToken).then(res => res.data);
+    }
+
     postPersona(idTipoDoc,data){
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};

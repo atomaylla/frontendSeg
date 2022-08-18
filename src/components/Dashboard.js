@@ -186,14 +186,14 @@ const Dashboard = (props) => {
                 </div>
             </div>
 
-            <div className="col-12 xl:col-6">
+            <div className="col-12 xl:col-12">
                 <div className="card">
                     <h5>Usuarios</h5>
                     <DataTable value={usuarios} rows={5} paginator responsiveLayout="scroll">
 
-                        <Column field="id" header="Name" sortable style={{width: '35%'}} body={(data) => data.id_usuario}/>
-                        <Column field="usuario" header="Usuario" sortable style={{width: '35%'}} body={(data) => data.usuario}/>
-                        <Column header="View" style={{width:'15%'}} body={() => (
+                        <Column field="id" header="id" sortable style={{width: '35%'}} body={(data) => data.id_usuario}/>
+                        <Column field="usuario" header="Nombre" sortable style={{width: '35%'}} body={(data) => data.usuario}/>
+                        <Column header="Ver" style={{width:'15%'}} body={() => (
                             <>
                                 <Button icon="pi pi-search" type="button" className="p-button-text"/>
                             </>
@@ -203,15 +203,7 @@ const Dashboard = (props) => {
 
             </div>
 
-            <div className="col-12 xl:col-6">
-                <div className="card">
-                    <h5>Ingreso Usuarios</h5>
-                    <Chart type="line" data={lineData} options={lineOptions} />
-                </div>
 
-
-
-            </div>
         </div>
     );
 }
