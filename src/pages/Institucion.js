@@ -16,6 +16,7 @@ import {GobiernoNivelService} from "../service/GobiernoNivelService";
 import {GobiernoService} from "../service/GobiernoService";
 import {EntidadService} from "../service/EntidadService";
 import {InstitucionService} from "../service/InstitucionService";
+import {EmailService} from "../service/EmailService";
 
 
 const Institucion = () => {
@@ -51,6 +52,7 @@ const Institucion = () => {
     const gobiernoNivelService = new GobiernoNivelService();
     const gobiernoService = new GobiernoService();
     const entidadService = new EntidadService();
+    const emailService = new EmailService();
     const institucionService = new InstitucionService();
     const [count,setCount] = useState(0);
     const openNew = () => {
@@ -75,11 +77,21 @@ const Institucion = () => {
         setDeleteProductsDialog(false);
     }
     const aceptarAplicacion= () => {
-        console.log("-------------------");
-        console.log(id_entidad);
-        institucionService.getInstitucion(id_entidad).then(data => setInstitucions(data));
+
+        institucionService.getInstitucion(id_entidad).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Institución ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es institucion/list.Se invoco el método listar institución .Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Institución ",mensaje);
+            }else{
+                setInstitucions(data)
+            }
+
+
+        });
         setAplicacionDialog(false);
-        // setUsuario(emptyUsuario);
+
     }
     const saveProduct = async() => {
 
@@ -95,6 +107,14 @@ const Institucion = () => {
 
                 //_aplicaciones[index] = _aplicacion;
                 institucionService.putInstitucion(institucion.id_institucion,_institucion).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Institución ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es institucion/id/"+institucion.id_institucion+"/tipo/6/update.Se invoco el método guardar institución .Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Institución ",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Institucion  Actualizado', life: 3000 });
+                    }
                     setUnidadEjecutora(data)
                     setCount(count + 1)
                 });
@@ -105,16 +125,21 @@ const Institucion = () => {
                 _institucion.descripcion = institucion.descripcion;
 
                 _institucion.id_estado = 1;
-                try {
+
                     institucionService.postInstitucion(id_unidadEjecutora,_institucion).then(data => {
+                        if(data == "error"){
+                            const userName = localStorage.getItem("userName");
+                            toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Institución ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                            const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es 'institucion/tipo/6/ue/"+id_unidadEjecutora+"/create.Se invoco el método guardar institución .Se notifico el error con el usuario "+userName;
+                            emailService.getSendEmail("Módulo Institución ",mensaje);
+                        }else{
+                            toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Institucion  Creada', life: 3000 });
+                        }
                         setUnidadEjecutora(data)
                         setCount(count + 1)
                     });
-                }
-                catch(err) {
-                    console.log(err);
-                }
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Creada', life: 3000 });
+
+
             }
 
             //   setUpdateList(updateList);
@@ -141,7 +166,18 @@ const Institucion = () => {
 
 
 
-        institucionService.deleteInstitucion(institucion.id_institucion).then(response => setCount(count + 1));
+        institucionService.deleteInstitucion(institucion.id_institucion).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Institución ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es institucion/id/"+institucion.id_institucion+"/tipo/6/updateDelete.Se invoco el método eliminar institución .Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Institución ",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Institucion  Eliminada', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
         toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Eliminada', life: 3000 });
         setDeleteProductDialog(false);
         setInstitucion(emptyInstitucion);

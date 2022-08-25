@@ -11,7 +11,7 @@ export class PaisService {
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
 
-        return axiosPrivate.get('tipo/2/pais/list',configToken).then(res => res.data);
+        return axiosPrivate.get('tipo/2/pais/list',configToken).then(res => res.data).catch( error => "error");
 
     }
 

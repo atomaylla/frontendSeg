@@ -19,6 +19,7 @@ import {Dropdown} from "primereact/dropdown";
 import {RolService} from "../service/RolService";
 import {AplicacionService} from "../service/AplicacionService";
 import {MenuService} from "../service/MenuService";
+import {EmailService} from "../service/EmailService";
 
 
 
@@ -107,12 +108,24 @@ const Rol = () => {
     const rolService = new RolService();
     const aplicacionService = new AplicacionService();
     const menuService = new MenuService();
+    const emailService = new EmailService();
     useEffect(() => {
         aplicacionService.getAplicacion().then(data => setAplicacion(data));
     }, []);
 
     useEffect(async() => {
-        if(id_aplicacion != null)rolService.getRols(id_aplicacion).then(data => setRols(data));
+        if(id_aplicacion != null)rolService.getRols(id_aplicacion).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Rol', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es aplicacion/"+ id_aplicacion +"/rol/list.Se invoco el método listar rol.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Rol",mensaje);
+            }else{
+                setRols(data)
+            }
+
+
+        });
 
 
     }, [count]);
@@ -155,7 +168,18 @@ const Rol = () => {
 
 
         if(id_aplicacion != null) {
-            rolService.getRols(id_aplicacion).then(data => setRols(data));
+            rolService.getRols(id_aplicacion).then(data => {
+                if(data == "error"){
+                    const userName = localStorage.getItem("userName");
+                    toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Rol', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                    const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es aplicacion/"+ id_aplicacion +"/rol/list.Se invoco el método listar rol.Se notifico el error con el usuario "+userName;
+                    emailService.getSendEmail("Módulo Rol",mensaje);
+                }else{
+                    setRols(data)
+                }
+
+
+            });
             setAplicacionDialog(false);
             setRol(emptyRol);
         }else{
@@ -167,45 +191,22 @@ const Rol = () => {
     }
     const saveMenuRol = () => {
         const _menuRols = [];
-      // console.log(stateMenuRol.ListMenuRol);
+
         let tempList = stateMenuRol.ListMenuRol;
         tempList.map((user) => {
-          //  console.log(user);
+
             if (user.id_estado === "1") {
                 _menuRols.push({ "id_menu" : user.id_menu, "id_rol": id_rol});
-               //  console.log(user);
+
             }
 
-            //return user;
+
         });
 
-       // console.log(_menuRols);
+
         menuService.postMenuRol(_menuRols).then(data => setMenuRols(data));
         setMenuDialog(false);
-       // let _menuRols = { ...menuRols };
-        //const _menuRols = [];
-/*
-        let _menuRol = { ...menuRol };
 
-        for (var i = 0; i < selectedProducts.length; i++){
-
-            var obj = selectedProducts[i];
-            for (var key in obj){
-                var value = obj[key];
-
-                if(key === "id_menu"){
-                    _menuRols.push({ "id_menu" : value, "id_rol": id_rol});
-               }
-
-            }
-
-
-        }
-
-        console.log(_menuRols);
-        menuService.postMenuRol(_menuRols).then(data => setMenuRols(data));
-        setMenuDialog(false);*/
-      //  setProductDialog(false);
     }
     const saveProduct = () => {
         setSubmitted(true);
@@ -218,28 +219,54 @@ const Rol = () => {
 
               //  _rols[index] = _rol;
                 rolService.putRol(rol.id_rol,_rol).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Rol', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es rol/update/"+ rol.id_rol +".Se invoco el método guardar rol.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Rol",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Rol Creado', life: 3000 });
+                    }
                     setRol(data)
                     setCount(count + 1)
                 });
                 toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
             }
             else {
-             //   _rol.id = createId();
+
                 _rol.titulo = rol.titulo
                 _rol.id_aplicacion = rol.id_aplicacion
                 _rol.id_estado = 1
-              //  _rol.id_estado = rol.id_estado
-              //  _rols.push(_rol);
+
                 rolService.postRol(id_aplicacion,_rol).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Rol', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es aplicacion/"+ id_aplicacion +"/rol/create.Se invoco el método guardar rol.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Rol",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Rol Creado', life: 3000 });
+                    }
                     setAplicacion(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Rol Creado', life: 3000 });
+
                 console.log("grabar");
             }
             console.log("aplicacion: "+ id_aplicacion);
 
-            rolService.getRols(id_aplicacion).then(data => setRols(data));
+            rolService.getRols(id_aplicacion).then(data => {
+                if(data == "error"){
+                    const userName = localStorage.getItem("userName");
+                    toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Rol', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                    const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es aplicacion/"+ id_aplicacion +"/rol/list.Se invoco el método listar rol.Se notifico el error con el usuario "+userName;
+                    emailService.getSendEmail("Módulo Rol",mensaje);
+                }else{
+                    setRols(data)
+                }
+
+
+            });
            // setRols(_rols);
             setProductDialog(false);
             setRol(emptyRol);
@@ -280,8 +307,19 @@ const Rol = () => {
 
         setDeleteProductDialog(false);
 
-        rolService.deleteRol(rol.id_rol).then(response =>setCount(count + 1));
-        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Rol Eliminado', life: 3000 });
+        rolService.deleteRol(rol.id_rol).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Rol', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es rol/delete/"+ rol.id_rol +".Se invoco el método eliminar rol.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Rol",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Rol Eliminado', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
+
         setRol(emptyRol);
 
     }

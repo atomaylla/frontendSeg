@@ -11,7 +11,7 @@ import { InputText } from 'primereact/inputtext';
 import {InputSwitch} from "primereact/inputswitch";
 import {AplicacionService} from "../service/AplicacionService";
 import {DocumentoTipoService} from "../service/DocumentoTipoService";
-
+import {EmailService} from "../service/EmailService";
 
 const DocumentoTipo = () => {
 
@@ -32,7 +32,7 @@ const DocumentoTipo = () => {
     const dt = useRef(null);
     const[state,setState]= useState({checked1:0});
     const useDeleteAplicacion = useState(null);
-
+    const emailService = new EmailService();
     const [count,setCount] = useState(0);
     const openNew = () => {
         setAplicacion(emptyAplicacion);
@@ -224,13 +224,23 @@ const DocumentoTipo = () => {
     const documentoTipoService = new DocumentoTipoService();
     const getData = async() =>{
 
-        const response = documentoTipoService.getDocumentoTipo();
+        const response = documentoTipoService.getDocumentoTipo().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Documento Tipo', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es documentoTipo/list.Se invoco el método al listar documento tipo.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Documento tipo",mensaje);
+            }else{
+                setAplicaciones(data)
+            }
+
+        });
         return response;
     }
 
     useEffect(async() => {
         console.log("ingreso list");
-        getData().then(data => setAplicaciones(data));
+        getData()
 
     }, [count]);
 

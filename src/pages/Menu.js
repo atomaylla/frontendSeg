@@ -18,6 +18,7 @@ import {Dropdown} from "primereact/dropdown";
 import {RolService} from "../service/RolService";
 import {MenuService} from "../service/MenuService";
 import {AplicacionService} from "../service/AplicacionService";
+import {EmailService} from "../service/EmailService";
 
 const Menu = () => {
 
@@ -64,16 +65,37 @@ const Menu = () => {
     const[aplicacion,setAplicacion] = useState(null);
     const menuService = new MenuService();
     const aplicacionService = new AplicacionService();
+    const emailService = new EmailService();
     useEffect(() => {
         aplicacionService.getAplicacion().then(data => setAplicacion(data));
     }, []);
     useEffect(async() => {
         if(id_aplicacion != null)
-            menuService.getMenus(id_aplicacion).then(data => setMenus(data));
+            menuService.getMenus(id_aplicacion).then(data => {
+                if(data == "error"){
+                    const userName = localStorage.getItem("userName");
+                    toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Menu ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                    const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es aplicacion/"+ id_aplicacion +"/menu/0.Se invoco el método listar menu .Se notifico el error con el usuario "+userName;
+                    emailService.getSendEmail("Módulo Menu ",mensaje);
+                }else{
+                    setMenus(data)
+                }
+
+
+            });
     }, [count]);
     useEffect(async() => {
         if(id_menu != null)
-            menuService.getSubMenus(id_menu).then(data => setSubMenus(data));
+            menuService.getSubMenus(id_menu).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Sub Menu ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es submenu/listId/"+ id_menu +".Se invoco el método listar menu .Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Sub Menu ",mensaje);
+            }
+                setSubMenus(data)
+
+        });
     }, [countSubmenu]);
     const openNew = () => {
         setMenu(emptyMenu);
@@ -117,10 +139,18 @@ const Menu = () => {
             if (menu.id_menu) {
                 const index = findIndexById(menu.id_menu);
                 menuService.putMenu(menu.id_menu,_menu).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Menu ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es menu/update/"+ menu.id_menu +".Se invoco el método actualizar menu .Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Menu ",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Menu  Actualizado', life: 3000 });
+                    }
                     setMenu(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Menu Actualizado', life: 3000 });
+
             }
             else {
 
@@ -132,10 +162,18 @@ const Menu = () => {
                 _menu.id_estado = 1;
 
                 menuService.postMenu(id_aplicacion,_menu).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Menu ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es aplicacion/"+ id_aplicacion +"/menu/create.Se invoco el método guardar menu .Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Menu ",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Menu  Creado', life: 3000 });
+                    }
                     setAplicacion(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Menu Creado', life: 3000 });
+
             }
 
             setProductDialog(false);
@@ -144,7 +182,18 @@ const Menu = () => {
     }
     const aceptarAplicacion= () => {
         if(id_aplicacion != null) {
-        menuService.getMenus(id_aplicacion).then(data => setMenus(data));
+        menuService.getMenus(id_aplicacion).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Menu ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es aplicacion/"+ id_aplicacion +"/menu/0.Se invoco el método listar menu .Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Menu ",mensaje);
+            }else{
+                setMenus(data)
+            }
+
+
+        });
         setAplicacionDialog(false);
         }else{
             setAplicacionDialog(true);
@@ -228,8 +277,19 @@ const Menu = () => {
         setDeleteProductDialog(false);
         //   setProduct(emptyProduct);
 
-        menuService.deleteMenu(menu.id_menu).then(response =>setCount(count + 1));
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+        menuService.deleteMenu(menu.id_menu).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Menu ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es menu/delete/"+ menu.id_menu +".Se invoco el método eliminar menu .Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Menu ",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Menu  Eliminado', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
+
         setMenu(emptyMenu);
     }
     const deleteSubMenu = () => {

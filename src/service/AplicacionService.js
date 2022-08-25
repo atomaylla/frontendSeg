@@ -9,29 +9,26 @@ export class AplicacionService {
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
 
-        return axiosPrivate.get('usuarioAplicacion/obtenerUsuarioAplicacionDetalle/aplicacion/'+id,configToken).then(res => res.data);
+        return axiosPrivate.get('usuarioAplicacion/obtenerUsuarioAplicacionDetalle/aplicacion/'+id,configToken).then(res => res.data).catch(error => "error");
     }
 
     getAplicacion() {
-        return axiosPrivate.get('aplicacion/list').then(res => res.data);
+        return axiosPrivate.get('aplicacion/list').then(res => res.data).catch(error => "error");
     }
     postAplicacion(data){
           const token = JSON.parse(sessionStorage.getItem('token'));
           const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
-          return  axiosPrivate.post('aplicacion/create', JSON.stringify(data),configToken).then(res => res.data).catch(error => {
-          });
+          return  axiosPrivate.post('aplicacion/create', JSON.stringify(data),configToken).then(res => res.data).catch(error => "error");
     }
     putAplicacion(id,data){
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
-        return  axiosPrivate.put('aplicacion/update/'+ id, JSON.stringify(data),configToken).then(res => res.data).catch(error => {
-        });
+        return  axiosPrivate.put('aplicacion/update/'+ id, JSON.stringify(data),configToken).then(res => res.data).catch(error => "error");
     }
     deleteAplicacion(id) {
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
-        return  axiosPrivate.delete('aplicacion/delete/'+ id,configToken).then(res => res.data).catch(error => {
-        });
+        return  axiosPrivate.delete('aplicacion/delete/'+ id,configToken).then(res => res.data).catch(error => "error");
     }
 
 }

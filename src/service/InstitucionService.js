@@ -8,24 +8,21 @@ export class InstitucionService {
 
 
     getInstitucion() {
-        return axiosPrivate.get('institucion/list').then(res => res.data);
+        return axiosPrivate.get('institucion/list').then(res => res.data).catch( error => "error");
     }
     postInstitucion(id,data){
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
-        return  axiosPrivate.post('institucion/tipo/6/ue/'+id+'/create', JSON.stringify(data),configToken).then(res => res.data).catch(error => {
-        });
+        return  axiosPrivate.post('institucion/tipo/6/ue/'+id+'/create', JSON.stringify(data),configToken).then(res => res.data).catch( error => "error");
     }
     putInstitucion(id,data){
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
-        return  axiosPrivate.put('nstitucion/id/'+id+'/tipo/6/update', JSON.stringify(data),configToken).then(res => res.data).catch(error => {
-        });
+        return  axiosPrivate.put('institucion/id/'+id+'/tipo/6/update', JSON.stringify(data),configToken).then(res => res.data).catch( error => "error");
     }
     deleteInstitucion(id) {
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
-        return  axiosPrivate.put('institucion/id/'+id+'/tipo/6/updateDelete','',configToken).then(res => res.data).catch(error => {
-        });
+        return  axiosPrivate.put('institucion/id/'+id+'/tipo/6/updateDelete','',configToken).then(res => res.data).catch( error => "error");
     }
 }

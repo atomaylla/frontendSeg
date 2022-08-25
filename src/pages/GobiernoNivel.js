@@ -13,6 +13,7 @@ import {InputSwitch} from "primereact/inputswitch";
 import {GobiernoNivelService} from "../service/GobiernoNivelService";
 import {Dropdown} from "primereact/dropdown";
 import {GobiernoService} from "../service/GobiernoService";
+import {EmailService} from "../service/EmailService";
 
 
 const GobiernoNivel = () => {
@@ -40,7 +41,7 @@ const GobiernoNivel = () => {
     const dt = useRef(null);
     const[state,setState]= useState({checked1:0});
     const useDeleteAplicacion = useState(null);
-
+    const emailService = new EmailService();
     const [count,setCount] = useState(0);
     const openNew = () => {
         setGobiernoNivel(emptyGobiernoNivel);
@@ -75,26 +76,38 @@ const GobiernoNivel = () => {
 
 
                 gobiernoNivelService.putAplicacion(id_gobierno,gobiernoNivel.id_gobierno_nivel,_aplicacion).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Gobierno Nivel', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobierno/"+ id_gobierno +"/gobiernoNivel/update"+gobiernoNivel.id_gobierno_nivel+".Se invoco el método modificar gobierno nivel.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Gobierno Nivel",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Gobierno Nivel Actualizado', life: 3000 });
+                    }
                     setGobiernoNivel(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Actualizado', life: 3000 });
+
             }
             else {
 
                 _aplicacion.nombre = gobiernoNivel.nombre;
 
                 _aplicacion.id_estado = 1;
-                try {
+
                     gobiernoNivelService.postGobiernoNivel(id_gobierno,_aplicacion).then(data => {
+                        if(data == "error"){
+                            const userName = localStorage.getItem("userName");
+                            toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Gobierno Nivel', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                            const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobierno/"+ id_gobierno +"/gobiernoNivel/create.Se invoco el método guardar gobierno nivel.Se notifico el error con el usuario "+userName;
+                            emailService.getSendEmail("Módulo Gobierno Nivel",mensaje);
+                        }else{
+                            toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Gobierno Nivel Creado', life: 3000 });
+                        }
                         setGobiernoNivel(data)
                         setCount(count + 1)
                     });
-                }
-                catch(err) {
-                    console.log(err);
-                }
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Creada', life: 3000 });
+
             }
 
 
@@ -117,8 +130,19 @@ const GobiernoNivel = () => {
 
     const deleteProduct = () => {
 
-        gobiernoNivelService.deleteAplicacion(id_gobierno,gobiernoNivel.id_gobierno_nivel).then(response => setCount(count + 1));
-        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Eliminada', life: 3000 });
+        gobiernoNivelService.deleteAplicacion(id_gobierno,gobiernoNivel.id_gobierno_nivel).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Gobierno Nivel', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobierno/"+ id_gobierno +"/gobiernoNivel/updateDelete/"+gobiernoNivel.id_gobierno_nivel+".Se invoco el método eliminar gobierno nivel.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Gobierno Nivel",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Gobierno Nivel Eliminado', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
+
         setDeleteProductDialog(false);
         setGobiernoNivel(emptyGobiernoNivel);
     }
@@ -138,7 +162,18 @@ const GobiernoNivel = () => {
 
 
         if(id_gobierno != null) {
-            gobiernoNivelService.getGobiernoNivel(id_gobierno).then(data => setGobiernoNivels(data));
+            gobiernoNivelService.getGobiernoNivel(id_gobierno).then(data => {
+                if(data == "error"){
+                    const userName = localStorage.getItem("userName");
+                    toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Gobierno Nivel', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                    const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobierno/"+ id_gobierno +"/gobiernoNivel/list.Se invoco el método listar gobierno nivel.Se notifico el error con el usuario "+userName;
+                    emailService.getSendEmail("Módulo Gobierno Nivel",mensaje);
+                }else{
+                    setGobiernoNivels(data)
+                }
+
+
+            });
             setAplicacionDialog(false);
             setGobiernoNivel(emptyGobiernoNivel);
         }else{

@@ -7,25 +7,22 @@ export class GobiernoNivelService {
 
 
     getGobiernoNivel(id) {
-        return axiosPrivate.get('gobierno/'+ id +'/gobiernoNivel/list').then(res => res.data);
+        return axiosPrivate.get('gobierno/'+ id +'/gobiernoNivel/list').then(res => res.data).catch( error => "error");
     }
     postGobiernoNivel(id,data){
 
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
-        return  axiosPrivate.post('gobierno/'+ id +'/gobiernoNivel/create', JSON.stringify(data),configToken).then(res => res.data).catch(error => {
-        });
+        return  axiosPrivate.post('gobierno/'+ id +'/gobiernoNivel/create', JSON.stringify(data),configToken).then(res => res.data).catch( error => "error");
     }
     putAplicacion(id,idGobiernoNivel,data){
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
-        return  axiosPrivate.put('gobierno/'+ id +'/gobiernoNivel/update/'+ idGobiernoNivel, JSON.stringify(data),configToken).then(res => res.data).catch(error => {
-        });
+        return  axiosPrivate.put('gobierno/'+ id +'/gobiernoNivel/update/'+ idGobiernoNivel, JSON.stringify(data),configToken).then(res => res.data).catch( error => "error");
     }
     deleteAplicacion(id, idGobiernoNivel) {
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
-        return  axiosPrivate.put('gobierno/'+ id +'/gobiernoNivel/updateDelete/'+ idGobiernoNivel,'',configToken).then(res => res.data).catch(error => {
-        });
+        return  axiosPrivate.put('gobierno/'+ id +'/gobiernoNivel/updateDelete/'+ idGobiernoNivel,'',configToken).then(res => res.data).catch( error => "error");
     }
 }

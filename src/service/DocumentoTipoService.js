@@ -11,7 +11,7 @@ export class DocumentoTipoService {
         const token = JSON.parse(sessionStorage.getItem('token'));
         const configToken = { headers: {"Authorization" : `Bearer ${token}`}};
 
-        return axiosPrivate.get('documentoTipo/list',configToken).then(res => res.data);
+        return axiosPrivate.get('documentoTipo/list',configToken).then(res => res.data).catch( error => "error");
 
     }
 

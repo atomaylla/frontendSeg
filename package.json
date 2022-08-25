@@ -9,6 +9,7 @@
     },
     "license": "MIT",
     "dependencies": {
+        "@emailjs/browser": "^3.6.2",
         "@fullcalendar/core": "^5.7.2",
         "@fullcalendar/daygrid": "^5.7.2",
         "@fullcalendar/interaction": "^5.7.2",

@@ -11,6 +11,7 @@ import { InputText } from 'primereact/inputtext';
 import {InputSwitch} from "primereact/inputswitch";
 import {AplicacionService} from "../service/AplicacionService";
 import {EstadoService} from "../service/EstadoService";
+import {EmailService} from "../service/EmailService";
 
 
 const Estado = () => {
@@ -32,7 +33,7 @@ const Estado = () => {
     const dt = useRef(null);
     const[state,setState]= useState({checked1:0});
     const useDeleteAplicacion = useState(null);
-
+    const emailService = new EmailService();
     const [count,setCount] = useState(0);
     const openNew = () => {
         setEstado(emptyEstado);
@@ -67,10 +68,18 @@ const Estado = () => {
 
                 //_aplicaciones[index] = _aplicacion;
                 estadoService.putEstado(estado.id_estado,_aplicacion).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Estado', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es estado/update/"+estado.id_estado+".Se invoco el método guardar estado.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Estado",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Estado Actualizado', life: 3000 });
+                    }
                     setEstado(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Actualizado', life: 3000 });
+
             }
             else {
 
@@ -78,16 +87,21 @@ const Estado = () => {
                 _aplicacion.descripcion = estado.descripcion;
 
                 _aplicacion.estado = 1;
-                try {
+
                     estadoService.postEstado(_aplicacion).then(data => {
+                        if(data == "error"){
+                            const userName = localStorage.getItem("userName");
+                            toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Estado', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                            const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es estado/create.Se invoco el método guardar estado.Se notifico el error con el usuario "+userName;
+                            emailService.getSendEmail("Módulo Estado",mensaje);
+                        }else{
+                            toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Estado Creado', life: 3000 });
+                        }
                         setEstado(data)
                         setCount(count + 1)
                     });
-                }
-                catch(err) {
-                    console.log(err);
-                }
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Creada', life: 3000 });
+
+
             }
 
             //   setUpdateList(updateList);
@@ -114,8 +128,19 @@ const Estado = () => {
 
 
 
-        estadoService.deleteEstado(estado.id_estado).then(response => setCount(count + 1));
-        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Eliminada', life: 3000 });
+        estadoService.deleteEstado(estado.id_estado).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Estado', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es estado/updateDelete/"+estado.id_estado+".Se invoco el método eliminar estado.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Estado",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Estado Eliminado', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
+
         setDeleteProductDialog(false);
         setEstado(emptyEstado);
     }
@@ -275,13 +300,23 @@ const Estado = () => {
     const estadoService = new EstadoService();
     const getData = async() =>{
 
-        const response = estadoService.getEstado();
+        const response = estadoService.getEstado().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Estado', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es estado/list.Se invoco el método listar estado.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Estado",mensaje);
+            }else{
+                setAplicaciones(data)
+            }
+
+        });
         return response;
     }
 
     useEffect(async() => {
         console.log("ingreso list");
-        getData().then(data => setAplicaciones(data));
+        getData()
 
     }, [count]);
 

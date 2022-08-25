@@ -4,6 +4,6 @@ export class EventService {
 
     getEvents() {
         return axios.get('assets/demo/data/events.json')
-            .then(res => res.data.data);
+            .then(res => res.data.data).catch( error => "error");
     }
 }

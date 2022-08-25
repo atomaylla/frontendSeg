@@ -11,6 +11,7 @@ import { InputText } from 'primereact/inputtext';
 import {InputSwitch} from "primereact/inputswitch";
 import {AplicacionService} from "../service/AplicacionService";
 import {UbigeoService} from "../service/UbigeoService";
+import {EmailService} from "../service/EmailService";
 
 
 const Ubigeo = () => {
@@ -32,7 +33,7 @@ const Ubigeo = () => {
     const dt = useRef(null);
     const[state,setState]= useState({checked1:0});
     const useDeleteAplicacion = useState(null);
-
+    const emailService = new EmailService();
     const [count,setCount] = useState(0);
     const openNew = () => {
         setAplicacion(emptyAplicacion);
@@ -224,13 +225,25 @@ const Ubigeo = () => {
     const ubigeoService = new UbigeoService();
     const getData = async() =>{
 
-        const response = ubigeoService.getUbigeo();
+        const response = ubigeoService.getUbigeo().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Ubigeo', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es tipo/3/ubigeo/list.Se invoco el método listar ubigeo.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo  Ubigeo",mensaje);
+            }else{
+                setAplicaciones(data)
+            }
+
+
+        });
+
         return response;
     }
 
     useEffect(async() => {
-        console.log("ingreso list");
-        getData().then(data => setAplicaciones(data));
+        console.log("ingreso list2");
+        getData();
 
     }, [count]);
 

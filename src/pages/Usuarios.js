@@ -20,6 +20,7 @@ import {AplicacionService} from "../service/AplicacionService";
 import {RolService} from "../service/RolService";
 import {TipoUsuarioService} from "../service/TipoUsuarioService";
 import {PersonaService} from "../service/PersonaService";
+import {EmailService} from "../service/EmailService";
 
 
 const Menu = () => {
@@ -55,14 +56,38 @@ const Menu = () => {
     const [count,setCount] = useState(0);
     const usuarioService = new UsuarioService();
     const personaService = new PersonaService();
+    const emailService = new EmailService();
     useEffect(() => {
       //  aplicacionService.getAplicacion().then(data => setAplicacion(data));
-        usuarioService.getUsuarios().then(data => setUsuarios(data));
+        usuarioService.getUsuarios().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Usuario', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es usuario/list.Se invoco el método listar usuario.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Usuario",mensaje);
+            }else{
+                setUsuarios(data)
+            }
+
+            setCount(count + 1)
+        });
         personaService.getPersonas().then(data => setPersonas(data));
     }, []);
 
     useEffect(async() => {
-        usuarioService.getUsuarios().then(data => setUsuarios(data));
+        usuarioService.getUsuarios().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Usuario', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es usuario/list.Se invoco el método listar usuario.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Usuario",mensaje);
+            }else{
+                setUsuarios(data)
+            }
+
+
+        });
+
     }, [count]);
 
 /*
@@ -108,10 +133,18 @@ const Menu = () => {
             if (usuario.id) {
 
                 usuarioService.putUsuario(usuario.id_usuario,_usuario).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Usuario', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es usuario/update/"+usuario.id_usuario+".Se invoco el método guardar usuario.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Usuario",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Usuario Modificado', life: 3000 });
+                    }
                     setUsuario(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+
             }
             else {
 
@@ -120,10 +153,18 @@ const Menu = () => {
                 _usuario.id_estado = "1"
 
                 usuarioService.postUsuario(id_persona,_usuario).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Usuario', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es persona/"+ id_persona +"/usuario/create.Se invoco el método guardar usuario.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Usuario",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Usuario Creado', life: 3000 });
+                    }
                     setAplicacion(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+
             }
 
              setUsuarios(_usuarios);
@@ -150,9 +191,20 @@ const Menu = () => {
         setUsuarios(_usuarios);
         setDeleteProductDialog(false);
         //   setProduct(emptyProduct);
-        usuarioService.deleteUsuario(usuario.id_usuario).then(response => setCount(count + 1))
+        usuarioService.deleteUsuario(usuario.id_usuario).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Usuario', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es usuario/delete/"+usuario.id_usuario+".Se invoco el método eliminar usuario.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Usuario",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Usuario Eliminado', life: 3000 });
+            }
 
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Usuario Eliminado', life: 3000 });
+            setCount(count + 1)
+        });
+
+
     setUsuario(emptyUsuario);
     }
 

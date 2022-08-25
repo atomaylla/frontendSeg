@@ -22,6 +22,7 @@ import {AplicacionService} from "../service/AplicacionService";
 import {TipoDocumentoService} from "../service/TipoDocumentoService";
 import {SexoService} from "../service/SexoService";
 import { addLocale } from 'primereact/api';
+import {EmailService} from "../service/EmailService";
 
 const Persona = () => {
 
@@ -100,16 +101,48 @@ const Persona = () => {
     const personaService = new PersonaService();
     const tipoDocumentoService = new TipoDocumentoService();
     const sexoService = new SexoService();
+    const emailService = new EmailService();
     useEffect(() => {
 
-        personaService.getPersonas().then(data => setPersonas(data));
-        tipoDocumentoService.getTipoDocumento().then(data => setTipoDocumento(data));
+        personaService.getPersonas().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Persona', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es documento/9/persona/list.Se invoco el método guardar persona.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Persona",mensaje);
+            }else{
+                setPersonas(data)
+            }
+
+
+        });
+        tipoDocumentoService.getTipoDocumento().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Persona', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es documentoTipo/list.Se invoco el método listar tipo documento.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Persona",mensaje);
+            }
+            setTipoDocumento(data)
+
+        });
         sexoService.getSexo().then(data => setSexo(data));
     }, []);
 
     useEffect(async() => {
 
-        personaService.getPersonas().then(data => setPersonas(data));
+        personaService.getPersonas().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Persona', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es documento/9/persona/list.Se invoco el método guardar persona.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Persona",mensaje);
+            }else{
+                setPersonas(data)
+            }
+
+
+        });
     }, [count]);
 
     const openNew = () => {
@@ -141,10 +174,18 @@ const Persona = () => {
             if (persona.id_persona) {
 
                 personaService.putPersona(persona.id_persona,_persona).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Persona', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es persona/update/"+persona.id_persona+".Se invoco el método actualizar persona.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Persona",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Unidad Persona', life: 3000 });
+                    }
                     setPersona(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+
             }
             else {
 
@@ -155,13 +196,20 @@ const Persona = () => {
                 _persona.fecha_nac = persona.fecha_nac
                 _persona.sexo = persona.sexo
                 _persona.id_estado = "1"
- console.log("data");
-                console.log(_persona);
+
                 personaService.postPersona(idTipoDocumento,_persona).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Persona', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es documento/"+idTipoDocumento+"/persona/create.Se invoco el método guardar persona.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Persona",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Unidad Persona', life: 3000 });
+                    }
                     setPersona(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+
             }
 
              setPersonas(_personas);
@@ -189,8 +237,19 @@ const Persona = () => {
         setPersonas(_usuarios);
         setDeleteProductDialog(false);
         //   setProduct(emptyProduct);
-        personaService.deletePersona(persona.id_persona).then(response => setCount(count + 1));
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+        personaService.deletePersona(persona.id_persona).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Persona', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es persona/delete/"+persona.id_persona+".Se invoco el método eliminar persona.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Persona",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Persona Eliminada', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
+
         setPersona(emptyPersona);
 
     }

@@ -11,6 +11,7 @@ import { InputText } from 'primereact/inputtext';
 import {InputSwitch} from "primereact/inputswitch";
 import {AplicacionService} from "../service/AplicacionService";
 import {TipoService} from "../service/TipoService";
+import {EmailService} from "../service/EmailService";
 
 
 const Tipo = () => {
@@ -32,7 +33,7 @@ const Tipo = () => {
     const dt = useRef(null);
     const[state,setState]= useState({checked1:0});
     const useDeleteAplicacion = useState(null);
-
+    const emailService = new EmailService();
     const [count,setCount] = useState(0);
     const openNew = () => {
         setTipo(emptyTipo);
@@ -67,6 +68,14 @@ const Tipo = () => {
 
                 //_aplicaciones[index] = _aplicacion;
                 tipoService.putTipo(tipo.id_tipo,_aplicacion).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Tipo', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es tipo/update/"+tipo.id_tipo+".Se invoco el método modificar tipo.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Tipo",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Tipo Creado', life: 3000 });
+                    }
                     setTipo(data)
                     setCount(count + 1)
                 });
@@ -78,16 +87,21 @@ const Tipo = () => {
                 _aplicacion.descripcion = tipo.descripcion;
 
                 _aplicacion.id_estado = 1;
-                try {
+
                     tipoService.postTipo(_aplicacion).then(data => {
+                        if(data == "error"){
+                            const userName = localStorage.getItem("userName");
+                            toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Tipo', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                            const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es tipo/create.Se invoco el método guardar tipo.Se notifico el error con el usuario "+userName;
+                            emailService.getSendEmail("Módulo Tipo",mensaje);
+                        }else{
+                            toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Tipo Creado', life: 3000 });
+                        }
                         setTipo(data)
                         setCount(count + 1)
                     });
-                }
-                catch(err) {
-                    console.log(err);
-                }
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Creada', life: 3000 });
+
+
             }
 
             //   setUpdateList(updateList);
@@ -114,8 +128,19 @@ const Tipo = () => {
 
 
 
-        tipoService.deleteTipo(tipo.id_tipo).then(response => setCount(count + 1));
-        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Eliminada', life: 3000 });
+        tipoService.deleteTipo(tipo.id_tipo).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Tipo', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es tipo/updateDelete/"+tipo.id_tipo+".Se invoco el método eliminar tipo.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Tipo",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Tipo Eliminado', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
+
         setDeleteProductDialog(false);
         setTipo(emptyTipo);
     }
@@ -264,13 +289,24 @@ const Tipo = () => {
     const tipoService = new TipoService();
     const getData = async() =>{
 
-        const response = tipoService.getTipo();
+        const response = tipoService.getTipo().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Tipo', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es tipo/list.Se invoco el método listar tipo.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Tipo",mensaje);
+            }else{
+                setAplicaciones(data)
+            }
+
+
+        });
         return response;
     }
 
     useEffect(async() => {
         console.log("ingreso list");
-        getData().then(data => setAplicaciones(data));
+        getData()
 
     }, [count]);
 

@@ -17,6 +17,7 @@ import {TipoService} from "../service/TipoService";
 import personaCaracteristica from "./PersonaCaracteristica";
 import {PersonaCaracteristicaService} from "../service/PersonaCaracteristicaService";
 import {PersonaService} from "../service/PersonaService";
+import {EmailService} from "../service/EmailService";
 
 
 const PersonaCaracteristica = () => {
@@ -51,7 +52,7 @@ const PersonaCaracteristica = () => {
     const dt = useRef(null);
     const[state,setState]= useState({checked1:0});
     const useDeleteAplicacion = useState(null);
-
+    const emailService = new EmailService();
     const [count,setCount] = useState(0);
     const openNew = () => {
         setPersonaCaracteristica(emptyPersonaCaracteristica);
@@ -83,32 +84,41 @@ const PersonaCaracteristica = () => {
            // let _aplicaciones = [...gobiernoNivels];
             let _aplicacion = { ...personaCaracteristica };
             if (personaCaracteristica.id_caracteristica == '') {
-                console.log("ingreso");
-                try {
+
+
                     personaCaracteristicaService.postPersonaCaracteristica(id_persona,id_tipo,id_tipoCaracteristica).then(data => {
+
+                        if(data == "error"){
+                            const userName = localStorage.getItem("userName");
+                            toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Persona Caracteristica', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                            const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es personaCaracteristica/persona/"+id_persona+"/tipo/"+id_tipo+"/caracteristica/"+id_tipoCaracteristica+"/create.Se invoco el método modificar persona caracteristica.Se notifico el error con el usuario "+userName;
+                            emailService.getSendEmail("Módulo Persona Caracteristica",mensaje);
+                        }else{
+                            toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Persona Caracterisitica Creado', life: 3000 });
+                        }
                         setPersonaCaracteristica(data)
                         setCount(count + 1)
                     });
-                }
-                catch(err) {
-                    console.log(err);
-                }
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Creada', life: 3000 });
 
 
 
 
-             //   const index = findIndexById(gobiernoNivel.id_gobierno_nivel);
 
 
 
             }
             else {
-                console.log("daaaaaa");
-               // _aplicacion.nombre = personaCaracteristica.nombre;
 
-                //_aplicacion.id_estado = 1;
                 personaCaracteristicaService.putPersonaCaracteristica(id_tipo,personaCaracteristica.id_gobierno_nivel,_aplicacion).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Persona Caracteristica', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es tipo/4/contrato/update/"+personaCaracteristica.id_gobierno_nivel+".Se invoco el método modificar persona caracteristica.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Persona Caracteristica",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Persona Caracterisitica Actualizado', life: 3000 });
+                    }
+
                     setPersonaCaracteristica(data)
                     setCount(count + 1)
                 });
@@ -138,8 +148,20 @@ setId_tipoCaracteristica(aplicacion.id_caracteristica);
 
     const deleteProduct = () => {
 
-        personaCaracteristicaService.deletePersonaCaracteristica(personaCaracteristica.id_persona,id_tipo,personaCaracteristica.id_caracteristica).then(response => setCount(count + 1));
-        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Persona caracteristica Eliminada', life: 3000 });
+        personaCaracteristicaService.deletePersonaCaracteristica(personaCaracteristica.id_persona,id_tipo,personaCaracteristica.id_caracteristica).then(data => {
+
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Persona Caracteristica', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es personaCaracteristica/persona/"+id_persona+"/tipo/"+id_tipo+"/caracteristica/"+id_tipoCaracteristica+"/delete.Se invoco el método eliminar persona caracteristica.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Persona Caracteristica",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Persona Caracterisitica Eliminada', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
+
         setDeleteProductDialog(false);
         setPersonaCaracteristica(emptyPersonaCaracteristica);
     }
@@ -157,10 +179,31 @@ setId_tipoCaracteristica(aplicacion.id_caracteristica);
     }
     const aceptarGobierno= () => {
         personaService.getPersonas().then(data => setPersonas(data));
-        personaService.getTipoCaracteristicas(id_tipo).then(data => setTipoCaracteristicas(data));
+        personaService.getTipoCaracteristicas(id_tipo).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Persona', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es tipo/"+id_tipo+"/contrato/list.Se invoco el método listar  persona caracteristica.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Persona",mensaje);
+            }
+            setTipoCaracteristicas(data)
+
+        });
 
         if(id_tipo != null) {
-            personaCaracteristicaService.getPersonaCaracteristica().then(data => setPersonaCaracteristicas(data));
+            personaCaracteristicaService.getPersonaCaracteristica().then(data => {
+
+                if(data == "error"){
+                    const userName = localStorage.getItem("userName");
+                    toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Persona Caracteristica', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                    const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es personaCaracteristica/list.Se invoco el método listar persona caracteristica.Se notifico el error con el usuario "+userName;
+                    emailService.getSendEmail("Módulo Persona Caracteristica",mensaje);
+                }else{
+                    setPersonaCaracteristicas(data)
+                }
+
+
+            });
             setAplicacionDialog(false);
             setPersonaCaracteristica(emptyPersonaCaracteristica);
         }else{

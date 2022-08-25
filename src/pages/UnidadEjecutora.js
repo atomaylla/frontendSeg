@@ -15,6 +15,7 @@ import {Dropdown} from "primereact/dropdown";
 import {GobiernoNivelService} from "../service/GobiernoNivelService";
 import {GobiernoService} from "../service/GobiernoService";
 import {EntidadService} from "../service/EntidadService";
+import {EmailService} from "../service/EmailService";
 
 
 const UnidadEjecutora = () => {
@@ -47,6 +48,7 @@ const UnidadEjecutora = () => {
     const gobiernoNivelService = new GobiernoNivelService();
     const gobiernoService = new GobiernoService();
     const entidadService = new EntidadService();
+    const emailService = new EmailService();
     const [count,setCount] = useState(0);
     const openNew = () => {
         setUnidadEjecutora(emptyUnidadEjecutora);
@@ -70,11 +72,21 @@ const UnidadEjecutora = () => {
         setDeleteProductsDialog(false);
     }
     const aceptarAplicacion= () => {
-        console.log("-------------------");
-        console.log(id_entidad);
-        unidadEjecutoraService.getUnidadEjecutora(id_entidad).then(data => setUnidadEjecutoras(data));
+
+        unidadEjecutoraService.getUnidadEjecutora(id_entidad).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Unidad Ejecutora', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es entidad/"+ id_entidad +"/unidadEjecutora/list/.Se invoco el método listar unidad ejecutora.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Unidad Ejecutora",mensaje);
+            }else{
+                setUnidadEjecutoras(data)
+            }
+
+
+        });
         setAplicacionDialog(false);
-        // setUsuario(emptyUsuario);
+
     }
     const saveProduct = async() => {
 
@@ -90,26 +102,40 @@ const UnidadEjecutora = () => {
 
                 //_aplicaciones[index] = _aplicacion;
                 unidadEjecutoraService.putUnidadEjecutora(id_entidad,unidadEjecutora.id_unidad_ejecutora,_unidadEjecutora).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Unidad Ejecutora', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es entidad/"+ id_entidad +"/unidadEjecutora/update/"+ unidadEjecutora.id_unidad_ejecutora+".Se invoco el método guardar unidad ejecutora.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Unidad Ejecutora",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Unidad Ejecutora Modificada', life: 3000 });
+                    }
                     setUnidadEjecutora(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Actualizado', life: 3000 });
+
             }
             else {
 
                 _unidadEjecutora.nombre = unidadEjecutora.nombre;
 
                 _unidadEjecutora.id_estado = 1;
-                try {
+
                     unidadEjecutoraService.postUnidadEjecutora(id_entidad,_unidadEjecutora).then(data => {
+                        if(data == "error"){
+                            const userName = localStorage.getItem("userName");
+                            toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Unidad Ejecutora', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                            const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es entidad/"+ id_entidad +"/unidadEjecutora/create.Se invoco el método guardar unidad ejecutora.Se notifico el error con el usuario "+userName;
+                            emailService.getSendEmail("Módulo Unidad Ejecutora",mensaje);
+                        }else{
+                            toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Unidad Ejecutora Creada', life: 3000 });
+                        }
                         setUnidadEjecutora(data)
                         setCount(count + 1)
                     });
-                }
-                catch(err) {
-                    console.log(err);
-                }
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Creada', life: 3000 });
+
+
+
             }
 
             //   setUpdateList(updateList);
@@ -136,8 +162,19 @@ const UnidadEjecutora = () => {
 
 
 
-        unidadEjecutoraService.deleteUnidadEjecutora(id_entidad,unidadEjecutora.id_unidad_ejecutora).then(response => setCount(count + 1));
-        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Eliminada', life: 3000 });
+        unidadEjecutoraService.deleteUnidadEjecutora(id_entidad,unidadEjecutora.id_unidad_ejecutora).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Unidad Ejecutora', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es entidad/"+ id_entidad +"/unidadEjecutora/updateDelete/"+ unidadEjecutora.id_unidad_ejecutora+".Se invoco el método eliminar unidad ejecutora.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Unidad Ejecutora",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Unidad Ejecutora Eliminada', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
+
         setDeleteProductDialog(false);
         setUnidadEjecutora(emptyUnidadEjecutora);
     }

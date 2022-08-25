@@ -14,6 +14,7 @@ import {TipoUsuarioService} from "../service/TipoUsuarioService";
 import {PersonaService} from "../service/PersonaService";
 import {GobiernoNivelService} from "../service/GobiernoNivelService";
 import {GobiernoService} from "../service/GobiernoService";
+import {EmailService} from "../service/EmailService";
 
 
 const Entidad = () => {
@@ -54,6 +55,7 @@ const Entidad = () => {
     const personaService = new PersonaService();
     const gobiernoNivelService = new GobiernoNivelService();
     const gobiernoService = new GobiernoService();
+    const emailService = new EmailService();
     useEffect(() => {
         //  aplicacionService.getAplicacion().then(data => setAplicacion(data));
       //  entidadService.getEntidad().then(data => setUsuarios(data));
@@ -104,10 +106,18 @@ const Entidad = () => {
             if (entidad.id_entidad) {
 
                 entidadService.putEntidad(id_gobierno_nivel,entidad.id_entidad,_entidad).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Entidad', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobiernoNivel/"+ id_gobierno_nivel +"/entidad/update/"+entidad.id_entidad+".Se invoco el método modificar entidad.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Entidad",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Entidad Actualizada', life: 3000 });
+                    }
                     setEntidad(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+
             }
             else {
 
@@ -116,10 +126,18 @@ const Entidad = () => {
                 _entidad.id_estado = 1;
 
                 entidadService.postEntidad(id_gobierno_nivel,_entidad).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Entidad', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobiernoNivel/"+ id_gobierno_nivel +"/entidad/create.Se invoco el método guardar entidad.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Entidad",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Entidad Creada', life: 3000 });
+                    }
                     setEntidad(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+
             }
 
           //  setUsuarios(_usuarios);
@@ -143,40 +161,27 @@ const Entidad = () => {
 
     const deleteProduct = () => {
 
-        entidadService.deleteEntidad(id_gobierno_nivel,entidad.id_entidad).then(response => setCount(count + 1))
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Usuario Eliminado', life: 3000 });
+        entidadService.deleteEntidad(id_gobierno_nivel,entidad.id_entidad).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Entidad', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobiernoNivel/"+ id_gobierno_nivel +"/entidad/updateDelete/"+entidad.id_entidad+".Se invoco el método modificar entidad.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Entidad",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Entidad Eliminada', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
+
         setDeleteProductDialog(false);
         setEntidad(emptyEntidad);
     }
 
-    const findIndexById = (id) => {
-        let index = -1;
-        for (let i = 0; i < usuarios.length; i++) {
-            if (usuarios[i].id === id) {
-                index = i;
-                break;
-            }
-        }
 
-        return index;
-    }
 
-    const createId = () => {
-        let id = '';
-        let chars = '0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    }
 
-    const exportCSV = () => {
-        dt.current.exportCSV();
-    }
 
-    const confirmDeleteSelected = () => {
-        setDeleteProductsDialog(true);
-    }
 
     const deleteSelectedProducts = () => {
         let _usuarios = usuarios.filter(val => !selectedProducts.includes(val));
@@ -316,7 +321,18 @@ const Entidad = () => {
        }
    */
     const aceptarAplicacion= () => {
-        entidadService.getEntidad(id_gobierno_nivel).then(data => setEntidads(data));
+        entidadService.getEntidad(id_gobierno_nivel).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Entidad', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobiernoNivel/"+ id_gobierno_nivel +"/entidad/list.Se invoco el método listar entidad.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Entidad",mensaje);
+            }else{
+                setEntidads(data)
+            }
+
+            //setCount(count + 1)
+        });
         setAplicacionDialog(false);
        // setUsuario(emptyUsuario);
     }
@@ -374,7 +390,16 @@ const Entidad = () => {
 
     useEffect(async() => {
         if(id_gobierno_nivel != null)
-        entidadService.getEntidad(id_gobierno_nivel).then(data => setEntidads(data));
+        entidadService.getEntidad(id_gobierno_nivel).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Entidad', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobiernoNivel/"+ id_gobierno_nivel +"/entidad/list.Se invoco el método listar entidad.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Entidad",mensaje);
+            }
+            setEntidads(data)
+            //setCount(count + 1)
+        });
     }, [count]);
 
     return (

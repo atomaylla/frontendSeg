@@ -11,7 +11,7 @@ import { InputText } from 'primereact/inputtext';
 import {InputSwitch} from "primereact/inputswitch";
 import {AplicacionService} from "../service/AplicacionService";
 import {ContratoService} from "../service/ContratoService";
-
+import {EmailService} from "../service/EmailService";
 
 const Contrato = () => {
 
@@ -32,7 +32,7 @@ const Contrato = () => {
     const dt = useRef(null);
     const[state,setState]= useState({checked1:0});
     const useDeleteAplicacion = useState(null);
-
+    const emailService = new EmailService();
     const [count,setCount] = useState(0);
     const openNew = () => {
         setContrato(emptyContrato);
@@ -67,10 +67,18 @@ const Contrato = () => {
 
                 //_aplicaciones[index] = _aplicacion;
                 contratoService.putContrato(contrato.id_contrato,_aplicacion).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Contrato', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es tipo/4/contrato/update.Se invoco el método de actualizar contrato.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Contrato",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Contrato Actualizado', life: 3000 });
+                    }
                     setContrato(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Actualizado', life: 3000 });
+
             }
             else {
 
@@ -79,16 +87,21 @@ const Contrato = () => {
                 _aplicacion.version = aplicacion.version;
                 _aplicacion.uri = aplicacion.uri;*/
                 _aplicacion.id_estado = 1;
-                try {
+
                     contratoService.postContrato(_aplicacion).then(data => {
+                        if(data == "error"){
+                            const userName = localStorage.getItem("userName");
+                            toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Contrato', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                            const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es tipo/4/contrato/create.Se invoco el método guardar contrato.Se notifico el error con el usuario "+userName;
+                            emailService.getSendEmail("Módulo Contrato",mensaje);
+                        }else{
+                            toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Contrato Creado', life: 3000 });
+                        }
                         setContrato(data)
                         setCount(count + 1)
                     });
-                }
-                catch(err) {
-                    console.log(err);
-                }
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Creada', life: 3000 });
+
+
             }
 
             //   setUpdateList(updateList);
@@ -115,8 +128,18 @@ const Contrato = () => {
 
 
 
-        contratoService.deleteContrato(contrato.id_contrato).then(response => setCount(count + 1));
-        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Eliminada', life: 3000 });
+        contratoService.deleteContrato(contrato.id_contrato).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Contrato', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es tipo/4/contrato/updateDelete.Se invoco el método de eliminar contrato.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Contrato",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Contrato Eliminado', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
         setDeleteProductDialog(false);
         setContrato(emptyContrato);
     }
@@ -276,13 +299,23 @@ const Contrato = () => {
     const contratoService = new ContratoService();
     const getData = async() =>{
 
-        const response = contratoService.getContrato();
+        const response = contratoService.getContrato().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Contrato', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es tipo/4/contrato/list.Se invoco el método de listar contrato.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Contrato",mensaje);
+            }else{
+                setAplicaciones(data)
+            }
+
+        });
         return response;
     }
 
     useEffect(async() => {
         console.log("ingreso list");
-        getData().then(data => setAplicaciones(data));
+        getData()
 
     }, [count]);
 

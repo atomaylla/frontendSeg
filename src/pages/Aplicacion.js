@@ -12,6 +12,7 @@ import {InputSwitch} from "primereact/inputswitch";
 import {AplicacionService} from "../service/AplicacionService";
 import {Checkbox} from "primereact/checkbox";
 import {UsuarioService} from "../service/UsuarioService";
+import {EmailService} from "../service/EmailService";
 
 
 
@@ -52,6 +53,7 @@ const Aplicacion = () => {
 
     const aplicacionService = new AplicacionService();
     const usuarioService = new UsuarioService();
+    const emailService = new EmailService();
     const openNew = () => {
         setAplicacion(emptyAplicacion);
         setSubmitted(false);
@@ -99,45 +101,24 @@ const Aplicacion = () => {
 
     const saveUsuario = () => {
         const _usuarios = [];
-        // console.log(stateMenuRol.ListMenuRol);
+
         let tempList = stateMenuRol.ListMenuRol;
         tempList.map((user) => {
-            //  console.log(user);
+
             if (user.id_estado === "1") {
                 _usuarios.push({ "id_usuario" : user.id_usuario, "id_aplicacion": id_aplicacion});
-                //  console.log(user);
+
             }
 
-            //return user;
+
         });
 
-        // console.log(_menuRols);
+
         usuarioService.postUsuarioAplicacion(_usuarios).then(data => setUsuarioAplicacions(data));
         setUsuarioDialog(false);
-        // let _menuRols = { ...menuRols };
-    /*    const _usuarios = [];
 
-        let _usuario = { ...usuario };
-
-        for (var i = 0; i < selectedProducts.length; i++){
-
-            var obj = selectedProducts[i];
-            for (var key in obj){
-                var value = obj[key];
-
-                if(key === "id_menu"){
-                    _usuarios.push({ "id_menu" : value, "id_rol": id_rol});
-                }
-
-            }
-
-
-        }
-
-        console.log(_menuRols);*/
-      /*  menuService.postMenuRol(_menuRols).then(data => setMenuRols(data));*/
         setUsuarioDialog(false);
-        //  setProductDialog(false);
+
     }
     const saveProduct = async() => {
 
@@ -151,12 +132,20 @@ const Aplicacion = () => {
 
                 const index = findIndexById(aplicacion.id_aplicacion);
 
-                //_aplicaciones[index] = _aplicacion;
+
                 aplicacionService.putAplicacion(aplicacion.id_aplicacion,_aplicacion).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Aplicación', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es aplicacion/update.Se invoco el método actualizar aplicacion.Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo aplicación",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Actualizado', life: 3000 });
+                    }
                     setAplicacion(data)
                     setCount(count + 1)
                 });
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Actualizado', life: 3000 });
+
             }
             else {
 
@@ -165,16 +154,22 @@ const Aplicacion = () => {
                 _aplicacion.version = aplicacion.version;
                 _aplicacion.uri = aplicacion.uri;
                 _aplicacion.id_estado = 1;
-                try {
+
                  aplicacionService.postAplicacion(_aplicacion).then(data => {
+                     if(data == "error"){
+                         const userName = localStorage.getItem("userName");
+                         toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Aplicación', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                         const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es aplicacion/create.Se invoco el método guardar aplicacion.Se notifico el error con el usuario "+userName;
+                         emailService.getSendEmail("Módulo aplicación",mensaje);
+                     }else{
+                         toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Creada', life: 3000 });
+                     }
                      setAplicacion(data)
                      setCount(count + 1)
                  });
-            }
-        catch(err) {
-                console.log(err);
-            }
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Creada', life: 3000 });
+
+
+              //  toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Creada', life: 3000 });
             }
 
            //   setUpdateList(updateList);
@@ -214,8 +209,18 @@ const Aplicacion = () => {
 
 
 
-        aplicacionService.deleteAplicacion(aplicacion.id_aplicacion).then(response => setCount(count + 1));
-        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Eliminada', life: 3000 });
+        aplicacionService.deleteAplicacion(aplicacion.id_aplicacion).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Aplicación', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es aplicacion/delete.Se invoco el método eliminar aplicacion.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo aplicación",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Actualizado', life: 3000 });
+            }
+            setCount(count + 1)
+        });
+     //   toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Eliminada', life: 3000 });
         setDeleteProductDialog(false);
         setAplicacion(emptyAplicacion);
     }
@@ -435,7 +440,18 @@ const Aplicacion = () => {
 
     const getData = async() =>{
 
-        const response = aplicacionService.getAplicacion();
+        const response = aplicacionService.getAplicacion().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Aplicación', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es aplicacion/list.Se invoco el método al listar aplicacion.Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo aplicación",mensaje);
+            }else{
+                setAplicaciones(data)
+            }
+
+
+        });
         return response;
     }
     const isSelected =(item) =>{
@@ -443,7 +459,7 @@ const Aplicacion = () => {
     }
     useEffect(async() => {
         console.log("ingreso list");
-       getData().then(data => setAplicaciones(data));
+       getData()
 
     }, [count]);
 

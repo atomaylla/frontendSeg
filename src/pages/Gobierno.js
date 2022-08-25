@@ -11,6 +11,7 @@ import { InputText } from 'primereact/inputtext';
 import {InputSwitch} from "primereact/inputswitch";
 import {AplicacionService} from "../service/AplicacionService";
 import {GobiernoService} from "../service/GobiernoService";
+import {EmailService} from "../service/EmailService";
 
 
 const Gobierno = () => {
@@ -67,6 +68,14 @@ const Gobierno = () => {
 
                 //_aplicaciones[index] = _aplicacion;
                 gobiernoService.putGobierno(aplicacion.id_aplicacion,_aplicacion).then(data => {
+                    if(data == "error"){
+                        const userName = localStorage.getItem("userName");
+                        toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Gobierno ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                        const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobierno/update/"+aplicacion.id_aplicacion+".Se invoco el método actualizar gobierno .Se notifico el error con el usuario "+userName;
+                        emailService.getSendEmail("Módulo Gobierno ",mensaje);
+                    }else{
+                        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Gobierno  Creado', life: 3000 });
+                    }
                     setAplicacion(data)
                     setCount(count + 1)
                 });
@@ -79,16 +88,21 @@ const Gobierno = () => {
                 _aplicacion.version = aplicacion.version;
                 _aplicacion.uri = aplicacion.uri;
                 _aplicacion.id_estado = 1;
-                try {
+
                     gobiernoService.postGobierno(_aplicacion).then(data => {
+                        if(data == "error"){
+                            const userName = localStorage.getItem("userName");
+                            toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Gobierno ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                            const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobierno/create.Se invoco el método guardar gobierno .Se notifico el error con el usuario "+userName;
+                            emailService.getSendEmail("Módulo Gobierno ",mensaje);
+                        }else{
+                            toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Gobierno  Creado', life: 3000 });
+                        }
                         setAplicacion(data)
                         setCount(count + 1)
                     });
-                }
-                catch(err) {
-                    console.log(err);
-                }
-                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Creada', life: 3000 });
+
+
             }
 
             //   setUpdateList(updateList);
@@ -115,8 +129,19 @@ const Gobierno = () => {
 
 
 
-        gobiernoService.deleteGobierno(aplicacion.id_gobierno).then(response => setCount(count + 1));
-        toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Aplicación Eliminada', life: 3000 });
+        gobiernoService.deleteGobierno(aplicacion.id_gobierno).then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Gobierno ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobierno/updateDelete/"+aplicacion.id_gobierno+".Se invoco el método eliminar gobierno .Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Gobierno ",mensaje);
+            }else{
+                toast.current.show({ severity: 'success', summary: 'Exitoso', detail: 'Gobierno  Eliminado', life: 3000 });
+            }
+
+            setCount(count + 1)
+        });
+
         setDeleteProductDialog(false);
         setAplicacion(emptyAplicacion);
     }
@@ -274,15 +299,26 @@ const Gobierno = () => {
     );
     const [updateList, setUpdateList] = useState(false);
     const gobiernoService = new GobiernoService();
+    const emailService = new EmailService();
     const getData = async() =>{
 
-        const response = gobiernoService.getGobierno();
+        const response = gobiernoService.getGobierno().then(data => {
+            if(data == "error"){
+                const userName = localStorage.getItem("userName");
+                toast.current.show({ severity: 'warn', summary: 'Alerta Módulo Gobierno ', detail: 'Existe inconvenientes en la aplicación,se ha notificado con un correo a soporte para su solución', life: 5000 });
+                const mensaje = "Se describe el problema ocurrido en el sistema de seguridad. El servicio afectado es gobierno/list.Se invoco el método listar gobierno .Se notifico el error con el usuario "+userName;
+                emailService.getSendEmail("Módulo Gobierno ",mensaje);
+            }else{
+                setAplicaciones(data)
+            }
+
+        });
         return response;
     }
 
     useEffect(async() => {
         console.log("ingreso list");
-        getData().then(data => setAplicaciones(data));
+        getData()
 
     }, [count]);
 
